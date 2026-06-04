@@ -1,0 +1,75 @@
+{
+  "skill_name": "n64-decomp",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "I'm starting a new N64 matching decomp. I have baserom.n64 in the project folder. Walk me through splat setup — what do I run first, what goes in .gitignore, and what splat yaml options should I avoid on day one?",
+      "expected_output": "Step-by-step splat/uv workflow with baserom.z64 after byteswap, gitignore for ROM and generated asm/, and explicit warning not to enable hardware_regs or libultra_symbols early.",
+      "files": [],
+      "expectations": [
+        "Mentions uv (not plain pip) for splat64",
+        "Mentions splat create_config and that baserom.z64 becomes the canonical ROM after config generation",
+        "Says not to enable hardware_regs or libultra_symbols in yaml",
+        "Says asm/ is generated and should not be hand-edited for fixes",
+        "Lists baserom and generated folders for gitignore",
+        "Uses uv run -m splat for create_config or split commands"
+      ]
+    },
+    {
+      "id": 1,
+      "prompt": "N64Recomp finished codegen and found the entrypoint, but my Zelda-style PC port crashes right after boot in an indirect call. The game uses overlays. What should I check before patching generated C?",
+      "expected_output": "Phase-correct N64Recomp/runtime guidance: overlay registration, jalr target evidence, metadata fixes before hand-edits, debug report format.",
+      "files": [],
+      "expectations": [
+        "Says not to hand-edit generated RecompiledFuncs as the primary fix",
+        "Mentions overlay load/registration or relocatable_sections_path",
+        "Mentions indirect call / jalr target or runtime lookup evidence",
+        "Uses structured debug triage with Phase: and Structural Cause: labels",
+        "Distinguishes codegen success from incomplete host runtime bring-up",
+        "References references/n64recomp.md or N64ModernRuntime/librecomp overlay registration"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Ghidra auto-analysis put a function boundary in the middle of what looks like a jump table at VRAM 0x8012A400. I have GhidraMCP available. How should I verify the real boundary before adding it to symbol_addrs?",
+      "expected_output": "GhidraMCP narrow evidence request, raw MIPS/delay-slot proof, confidence labels, function-discovery conservatism.",
+      "files": [],
+      "expectations": [
+        "Does not trust Ghidra decompiler output alone for the final boundary",
+        "Requests raw MIPS disassembly, branch targets, or delay-slot context",
+        "Uses confidence labels (Known/Likely/Tentative/Unknown) or equivalent conservatism",
+        "Mentions jump table validation or indirect control-flow evidence",
+        "References GhidraMCP or narrow evidence-gathering workflow",
+        "Mentions function_ledger or docs/function_ledger before symbol_addrs"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Splat split finished and I have asm/ full of .s files. What's the next step to get my first matching ROM build before I touch libultra or C?",
+      "expected_output": "Points to configure_min.py --emit-configure, assembly-only matching, linker script still required, do not edit asm for fixes.",
+      "files": [],
+      "expectations": [
+        "References configure_min.py or references/configure_min.py",
+        "Mentions --emit-configure or emit-configure for starter configure.py",
+        "Says compiler version does not matter yet for assembly-only matching",
+        "Says not to hand-edit asm files for linker or BSS fixes",
+        "Mentions linker script or .ld still required after emit-configure",
+        "References references/build-system.md by path"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "My first matching build fails with wrong BSS addresses. Linker errors mention BSS and asm/1000.s has lui/addiu setting BSS start/size. Should I edit that asm file to fix it?",
+      "expected_output": "No asm edits; fix bss_size and .bss subsegment in yaml from entry asm evidence, then re-split/rebuild per build-system.md.",
+      "files": [],
+      "expectations": [
+        "Says not to hand-edit asm files because splat regenerates them",
+        "Mentions bss_size in the main segment yaml or a .bss subsegment",
+        "Says to derive BSS_START/BSS_SIZE from entry asm as evidence for yaml, not as the permanent fix in asm",
+        "Mentions re-running split or configure clean/rebuild after yaml fix",
+        "References references/build-system.md or build-system.md BSS section",
+        "Says splat regenerates asm and requires yaml fix not permanent asm patch"
+      ]
+    }
+  ]
+}

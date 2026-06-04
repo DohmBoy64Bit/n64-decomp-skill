@@ -1,0 +1,102 @@
+[
+  {
+    "query": "ok so i dumped cruisin usa and want to use splat with uv — i have baserom.n64 in the folder. what do i run first and what should i gitignore?",
+    "should_trigger": true
+  },
+  {
+    "query": "splat split done, asm/ is full of .s files. how do i get my first matching ROM before libultra? someone mentioned configure_min.py",
+    "should_trigger": true
+  },
+  {
+    "query": "linker is complaining about BSS and asm/1000.s has lui/addiu for bss start — should i patch that asm file?",
+    "should_trigger": true
+  },
+  {
+    "query": "N64Recomp found the entrypoint but my pc port dies on a jalr right after boot. game uses overlays like zelda 64 recomp. what do i check before editing RecompiledFuncs?",
+    "should_trigger": true
+  },
+  {
+    "query": "need to wire bethington ghidra-mcp into cursor mcp.json for an n64 rom i'm analyzing — what's the install flow?",
+    "should_trigger": true
+  },
+  {
+    "query": "ghidra put a function boundary in the middle of a jump table at 0x8012A400. i have ghidramcp — how do i verify before symbol_addrs?",
+    "should_trigger": true
+  },
+  {
+    "query": "how do i find libultra version from asm/header.s revision byte and match with ultralib + m2c?",
+    "should_trigger": true
+  },
+  {
+    "query": "this game has no os* functions — lots of MMIO at 0xA4600000 PI. how do i map custom runtime boundaries for n64recomp?",
+    "should_trigger": true
+  },
+  {
+    "query": "decomp.me — which ido preset for this m2c output from asm/42D80.s? splat says options.compiler is IDO",
+    "should_trigger": true
+  },
+  {
+    "query": "setting up n64modernruntime + rt64 for a static recomp port. what goes in the recomp toml for relocatable overlays?",
+    "should_trigger": true
+  },
+  {
+    "query": "help me add rmlui launcher settings menu to my n64recomp pc port — not the in-game n64 menu yet",
+    "should_trigger": true
+  },
+  {
+    "query": "PI DMA into RDRAM looks wrong after overlay load — cache invalidate before rsp read? n64 port debug",
+    "should_trigger": true
+  },
+  {
+    "query": "readelf -Ws shows FUNC size 0 for half my symbols before i run n64recomp — splat yaml issue?",
+    "should_trigger": true
+  },
+  {
+    "query": "phase 0 rom recon: is this .v64 or .z64 and how do i map vram 0x80200000 to rom offset for main segment?",
+    "should_trigger": true
+  },
+  {
+    "query": "write an AGENTS.md for my n64 decomp repo with splat split commands and ghidra mcp setup — what should be documented?",
+    "should_trigger": true
+  },
+  {
+    "query": "fix my react dashboard chart — the x axis labels overlap on mobile",
+    "should_trigger": false
+  },
+  {
+    "query": "burnout 3 xbox recomp crashes in D3D8 CreateDevice — xboxrecomp icall trace",
+    "should_trigger": false
+  },
+  {
+    "query": "how do i lift this win95 pe exe to c with pcrecomp and capstone?",
+    "should_trigger": false
+  },
+  {
+    "query": "mario 64 pc port on dolphin emulator — configure graphics hacks for widescreen",
+    "should_trigger": false
+  },
+  {
+    "query": "i need a python script to parse pdf invoices and export csv for accounting",
+    "should_trigger": false
+  },
+  {
+    "query": "n64 emulator plugin for retroarch — how to overclock vi refresh?",
+    "should_trigger": false
+  },
+  {
+    "query": "decompile my snes rom with mesen and add hd packs",
+    "should_trigger": false
+  },
+  {
+    "query": "gamecube iso extract files — dolphin filesystem tutorial",
+    "should_trigger": false
+  },
+  {
+    "query": "mips linux cross compile hello world for embedded router openwrt",
+    "should_trigger": false
+  },
+  {
+    "query": "zelda oot randomizer seed settings — rando logic question not decomp",
+    "should_trigger": false
+  }
+]

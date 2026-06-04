@@ -1,0 +1,8 @@
+*.skill
+dist/
+.DS_Store
+Thumbs.db
+n64-decomp-workspace/
+evals/trigger_eval_current.json
+evals/trigger_eval_stderr.log
+evals/trigger_eval_run.log
