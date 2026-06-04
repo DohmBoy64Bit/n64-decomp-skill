@@ -125,7 +125,6 @@ n64-decomp/
 │   ├── custom-runtime.md
 │   ├── compiler-and-c.md
 │   └── n64recomp.md
-└── Original_SKILL.md          # Archived monolithic draft (not shipped in .skill)
 ```
 
 ---
