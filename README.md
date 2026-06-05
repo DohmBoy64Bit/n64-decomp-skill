@@ -220,7 +220,7 @@ MIT — see [LICENSE](LICENSE). You must **own** any N64 software you analyze. N
 
 ## Links
 
-- **Releases:** https://github.com/DohmBoy64Bit/n64-decomp-skill/releases (current: **v1.2.0**)
+- **Releases:** https://github.com/DohmBoy64Bit/n64-decomp-skill/releases (current: **v1.2.1**)
 - [splat](https://github.com/ethteck/splat) · [N64Recomp](https://github.com/N64Recomp/N64Recomp) · [N64LoaderWV](https://github.com/zeroKilo/N64LoaderWV) · [GhidraMCP](https://github.com/bethington/ghidra-mcp) · [RMG MCP](https://github.com/thebardockgames/RMG)
 - Related: [pcrecomp-skill](https://github.com/DohmBoy64Bit/pcrecomp-skill), [xboxrecomp-skill](https://github.com/DohmBoy64Bit/xboxrecomp-skill)
 - Design inspiration: [ps2-recomp-Agent-SKILL](https://github.com/hkmodd/ps2-recomp-Agent-SKILL)
