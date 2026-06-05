@@ -53,16 +53,23 @@ This skill is a **playbook** for the AI agent. It does **not** include game ROMs
 
 ### Option 3: Build `.skill`
 
+**Fast path** (~3s, ~40 KB artifact):
+
 ```powershell
+powershell -File scripts/package_release.ps1
+```
+
+**Manual stage** — package **`dist/n64-decomp` only**, not the repo root:
+
+```powershell
+# Do NOT run package_skill on the repo root — it walks dist/ and n64-decomp-workspace/ too.
 $stage = "dist\n64-decomp"
-New-Item -ItemType Directory -Force -Path "$stage\resources","$stage\scripts","$stage\examples" | Out-Null
-Copy-Item SKILL.md $stage\
-Copy-Item resources\* $stage\resources\
-Copy-Item scripts\* $stage\scripts\
-Copy-Item examples\* $stage\examples\
+# ... copy SKILL.md, resources/, scripts/, examples/ into $stage ...
 cd path\to\skill-creator
 python -m scripts.package_skill E:\SkillDev\N64decomp\dist\n64-decomp E:\SkillDev\N64decomp\dist
 ```
+
+Output: `dist/n64-decomp.skill`. If a prior run created a multi-GB `*.skill` in `dist/`, delete it before repackaging.
 
 ---
 
@@ -110,11 +117,14 @@ n64-decomp/
 │   ├── 12-n64-hardware-subsystems.md
 │   ├── 13-decisional-brain.md
 │   ├── 14-rmg-mcp-playbook.md   # Optional live emulator MCP
+│   ├── 15-mcp-client-setup.md   # Ghidra + RMG MCP autoconfig
 │   └── db-n64-index.md      # Master router
 ├── scripts/
 │   ├── configure_min.py
-│   └── project-state-template.md
+│   ├── project-state-template.md
+│   └── package_release.ps1  # Dev packaging (not in .skill)
 ├── examples/
+│   ├── mcp-servers.template.json
 │   ├── recomp-toml-skeleton.toml
 │   └── splat-bss-subsegment.yaml
 └── evals/                   # Dev only (not in .skill)
@@ -124,7 +134,7 @@ n64-decomp/
 
 ## Development / evals
 
-Skill-creator evals under `evals/`; benchmark runs in `n64-decomp-workspace/` (gitignored). Iteration 6: with_skill **100%**, baseline **85.7%**.
+Skill-creator evals under `evals/`; benchmark runs in `n64-decomp-workspace/` (gitignored). Latest (iteration 9, v1.2.0): with_skill **100%**, baseline **78.6%**, Δ **+21.4%** across 10 evals.
 
 ---
 
@@ -136,7 +146,7 @@ MIT — see [LICENSE](LICENSE). You must **own** any N64 software you analyze. N
 
 ## Links
 
-- **Releases:** https://github.com/DohmBoy64Bit/n64-decomp-skill/releases
+- **Releases:** https://github.com/DohmBoy64Bit/n64-decomp-skill/releases (current: **v1.2.0**)
 - [splat](https://github.com/ethteck/splat) · [N64Recomp](https://github.com/N64Recomp/N64Recomp) · [N64LoaderWV](https://github.com/zeroKilo/N64LoaderWV) · [GhidraMCP](https://github.com/bethington/ghidra-mcp) · [RMG MCP](https://github.com/thebardockgames/RMG)
 - Related: [pcrecomp-skill](https://github.com/DohmBoy64Bit/pcrecomp-skill), [xboxrecomp-skill](https://github.com/DohmBoy64Bit/xboxrecomp-skill)
 - Design inspiration: [ps2-recomp-Agent-SKILL](https://github.com/hkmodd/ps2-recomp-Agent-SKILL)
