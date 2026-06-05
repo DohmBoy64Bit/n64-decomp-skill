@@ -31,7 +31,7 @@
 - **baserom path** (not committed):
 - **splat yaml**:
 - **N64Recomp TOML** (if recomp):
-- **Ghidra program** (name + arch):
+- **Ghidra program** (name + arch + N64LoaderWV version):
 
 ## Current Phase
 `PHASE_SETUP` — see `11-operational-phases.md`
@@ -40,8 +40,9 @@
 - **uv / splat**: 
 - **Matching**: `configure.py` present? linker script?
 - **N64Recomp build**: 
-- **GhidraMCP**: port / connected / correct MIPS program loaded?
-- **RMG MCP (optional)**: bridge_status / ROM loaded / `server.py` / symbols `.map` loaded?
+- **GhidraMCP**: bridge path / HTTP port / MCP server id `ghidra` / correct MIPS N64 program?
+- **MCP host**: Cursor|Claude|VS Code|Codex|… / config file path (`15-mcp-client-setup.md`)
+- **RMG MCP (optional)**: `server.py` path / host:port / bridge_status / ROM loaded / symbols `.map`?
 
 ## Active Commands
 ```bash

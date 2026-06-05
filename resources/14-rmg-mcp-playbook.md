@@ -2,7 +2,9 @@
 
 **Optional** runtime debugging — use when static analysis (GhidraMCP, splat, logs) is not enough and you need **live** RDRAM, VR4300 registers, breakpoints, or original-vs-recomp trace comparison.
 
-**Not required** for matching decomp, splat setup, or first N64Recomp bring-up. Prefer `04-ghidra-mcp.md` and build/log evidence first.
+**Not required** for matching decomp, splat setup, or first N64Recomp bring-up. Prefer `04-ghidra-mcp.md` (with [N64LoaderWV](https://github.com/zeroKilo/N64LoaderWV) ROM load) and build/log evidence first.
+
+**MCP client wiring:** `15-mcp-client-setup.md` — same autoconfig doc as Ghidra; server id `rmg-n64-debugger`.
 
 Upstream fork: [thebardockgames/RMG](https://github.com/thebardockgames/RMG) (Mupen64Plus-based **RMG** + Qt6 WebSocket bridge + Python MCP `server.py`). Based on [Rosalie241/RMG](https://github.com/Rosalie241/RMG).
 
@@ -57,34 +59,23 @@ Environment (defaults from fork README):
 
 ```text
 [ ] RMG MCP fork built (MCP_BRIDGE=ON) and RMG.exe launches
+[ ] pip install mcp websockets (for server.py)
 [ ] ROM loaded in RMG (correct region/revision)
-[ ] python server.py running (or MCP client spawns it)
+[ ] python server.py running (or MCP client spawns it via stdio)
 [ ] bridge_status succeeds
-[ ] MCP client entry for server.py (stdio) + env host/port
+[ ] MCP client entry — see 15-mcp-client-setup.md (server id rmg-n64-debugger)
 [ ] Optional: load_symbols(path/to/game.map) for symbol-aware tools
 ```
 
 ---
 
-## MCP client configuration (Cursor-style)
+## MCP client configuration
 
-```json
-{
-  "mcpServers": {
-    "rmg-n64-debugger": {
-      "command": "python",
-      "args": ["C:/path/to/RMG/server.py"],
-      "env": {
-        "RMG_MCP_HOST": "127.0.0.1",
-        "RMG_MCP_PORT": "8765",
-        "RMG_MCP_TIMEOUT_SECONDS": "5.0"
-      }
-    }
-  }
-}
-```
+**Canonical:** `15-mcp-client-setup.md` §4.3 and `examples/mcp-servers.template.json`.
 
-Adjust paths. RMG GUI must stay open with the ROM loaded while the bridge is used.
+Do not assume Cursor — discover the user's MCP host and merge the `rmg-n64-debugger` block with the same absolute `RMG_MCP_SERVER` path and `RMG_MCP_HOST` / `RMG_MCP_PORT` env vars.
+
+RMG GUI must stay open with the ROM loaded while the bridge is used.
 
 ---
 
@@ -191,18 +182,42 @@ Use for **evidence**, not as a substitute for fixing yaml/TOML/runtime layers (`
 
 ---
 
-## Build pointer (user / one-time)
+## Full build (Windows / MSYS2 ucrt64)
 
-From fork README (Windows / MSYS2 `ucrt64`):
+From [thebardockgames/RMG](https://github.com/thebardockgames/RMG) README — one-time user setup:
 
 ```bash
+# Inside MSYS2 UCRT64 shell — install deps per fork README (Qt6, cmake, ninja, etc.)
+git clone https://github.com/thebardockgames/RMG.git
+cd RMG
+
 cmake -S . -B build-mcp-ucrt -G "MSYS Makefiles" \
   -DCMAKE_BUILD_TYPE=Release \
   -DMCP_BRIDGE=ON \
   -DPORTABLE_INSTALL=ON \
   -DNETPLAY=OFF -DVRU=OFF -DUSE_ANGRYLION=OFF -DUPDATER=OFF
+
 cmake --build build-mcp-ucrt --config Release -j 8
 cmake --install build-mcp-ucrt
 ```
 
-Then: launch `RMG.exe` → load ROM → `python server.py` → connect MCP client.
+**Python MCP server:**
+
+```bash
+pip install mcp websockets
+cd /path/to/RMG
+python server.py
+# Or let MCP host spawn server.py — 15-mcp-client-setup.md
+```
+
+**Bring-up order:**
+
+```text
+1. Launch RMG.exe from install dir
+2. File → Open ROM (user-owned lawful copy)
+3. Start server.py (manual or via MCP stdio spawn)
+4. Wire MCP client (15-mcp-client-setup.md)
+5. bridge_status → load_symbols(optional) → debug tools
+```
+
+Record RMG install path, `server.py` path, and WebSocket host:port in `N64_PROJECT_STATE.md`.

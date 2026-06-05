@@ -1,0 +1,40 @@
+{
+  "_comment": "Copy to your MCP host config. Replace placeholders with absolute paths. Do not commit ROM paths.",
+  "mcpServers": {
+    "ghidra": {
+      "command": "python",
+      "args": ["<GHIDRA_MCP_BRIDGE>"],
+      "env": {}
+    },
+    "rmg-n64-debugger": {
+      "command": "python",
+      "args": ["<RMG_MCP_SERVER>"],
+      "env": {
+        "RMG_MCP_HOST": "127.0.0.1",
+        "RMG_MCP_PORT": "8765",
+        "RMG_MCP_TIMEOUT_SECONDS": "5.0"
+      }
+    }
+  },
+  "_paths": {
+    "GHIDRA_MCP_BRIDGE": "C:/tools/ghidra-mcp/bridge_mcp_ghidra.py",
+    "RMG_MCP_SERVER": "C:/tools/RMG/server.py",
+    "GHIDRA_MCP_HTTP_URL_optional": "http://127.0.0.1:8081/mcp"
+  },
+  "_prerequisites": {
+    "ghidra": [
+      "Ghidra installed",
+      "N64LoaderWV extension — https://github.com/zeroKilo/N64LoaderWV",
+      "N64 ROM imported with N64LoaderWV loader",
+      "bethington/ghidra-mcp extension deployed",
+      "Tools → GhidraMCP → Start MCP Server",
+      "curl http://127.0.0.1:8089/check_connection"
+    ],
+    "rmg-n64-debugger": [
+      "thebardockgames/RMG built with -DMCP_BRIDGE=ON",
+      "pip install mcp websockets",
+      "RMG.exe running with user ROM loaded",
+      "bridge_status succeeds"
+    ]
+  }
+}

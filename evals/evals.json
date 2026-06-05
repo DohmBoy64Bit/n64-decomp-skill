@@ -3,6 +3,8 @@
   "evals": [
     {
       "id": 0,
+      "eval_name": "splat-setup-basics",
+      "track": "A",
       "prompt": "I'm starting a new N64 matching decomp. I have baserom.n64 in the project folder. Walk me through splat setup — what do I run first, what goes in .gitignore, and what splat yaml options should I avoid on day one?",
       "expected_output": "Step-by-step splat/uv workflow with baserom.z64 after byteswap, gitignore for ROM and generated asm/, and explicit warning not to enable hardware_regs or libultra_symbols early.",
       "files": [],
@@ -17,6 +19,8 @@
     },
     {
       "id": 1,
+      "eval_name": "n64recomp-overlay-crash",
+      "track": "B",
       "prompt": "N64Recomp finished codegen and found the entrypoint, but my Zelda-style PC port crashes right after boot in an indirect call. The game uses overlays. What should I check before patching generated C?",
       "expected_output": "Phase-correct N64Recomp/runtime guidance: overlay registration, jalr target evidence, metadata fixes before hand-edits, debug report format.",
       "files": [],
@@ -31,6 +35,8 @@
     },
     {
       "id": 2,
+      "eval_name": "ghidra-boundary-verify",
+      "track": "A",
       "prompt": "Ghidra auto-analysis put a function boundary in the middle of what looks like a jump table at VRAM 0x8012A400. I have GhidraMCP available. How should I verify the real boundary before adding it to symbol_addrs?",
       "expected_output": "GhidraMCP narrow evidence request, raw MIPS/delay-slot proof, confidence labels, function-discovery conservatism.",
       "files": [],
@@ -45,6 +51,8 @@
     },
     {
       "id": 3,
+      "eval_name": "matching-build-first",
+      "track": "A",
       "prompt": "Splat split finished and I have asm/ full of .s files. What's the next step to get my first matching ROM build before I touch libultra or C?",
       "expected_output": "Points to configure_min.py --emit-configure, assembly-only matching, linker script still required, do not edit asm for fixes.",
       "files": [],
@@ -59,8 +67,10 @@
     },
     {
       "id": 4,
+      "eval_name": "bss-yaml-fix",
+      "track": "A",
       "prompt": "My first matching build fails with wrong BSS addresses. Linker errors mention BSS and asm/1000.s has lui/addiu setting BSS start/size. Should I edit that asm file to fix it?",
-      "expected_output": "No asm edits; fix bss_size and .bss subsegment in yaml from entry asm evidence, then re-split/rebuild per build-system.md.",
+      "expected_output": "No asm edits; fix bss_size and .bss subsegment in yaml from entry asm evidence, then re-split/rebuild per 03-matching-build.md.",
       "files": [],
       "expectations": [
         "Says not to hand-edit asm files because splat regenerates them",
@@ -69,6 +79,86 @@
         "Mentions re-running split or configure clean/rebuild after yaml fix",
         "References resources/03-matching-build.md or 03-matching-build BSS section",
         "Says splat regenerates asm and requires yaml fix not permanent asm patch"
+      ]
+    },
+    {
+      "id": 5,
+      "eval_name": "libultra-identification",
+      "track": "A",
+      "prompt": "n64sym hints libultra might start around 0x800AB000. I already have asm/ and a matching ROM. How should I identify libultra boundaries and add symbols without trusting n64sym output directly?",
+      "expected_output": "n64sym as hints only, ultralib/m2c comparison, module-by-module yaml symbols, resources/06-libultra.md.",
+      "files": [],
+      "expectations": [
+        "Says n64sym is unreliable or hints-only, not direct symbol source",
+        "Mentions ultralib comparison or m2c for matching candidates",
+        "Mentions adding libultra symbols module-by-module in yaml or gradually",
+        "References resources/06-libultra.md or 06-libultra path",
+        "Mentions asm/header.s revision or libultra SDK version check",
+        "Says not to add all n64sym names blindly to symbol_addrs"
+      ]
+    },
+    {
+      "id": 6,
+      "eval_name": "custom-runtime-mmio",
+      "track": "A",
+      "prompt": "n64sym found nothing useful and I don't see a normal os* libultra block. I see lots of lui/addiu to 0xA4600000 and 0xA4400000 in early init. Is this a no-libultra game? What should I do next in matching decomp?",
+      "expected_output": "Custom runtime path: behavior classification, MMIO register bands, resources/07-custom-runtime.md, do not force libultra names.",
+      "files": [],
+      "expectations": [
+        "Says not to force libultra without proof or use custom-runtime path",
+        "Mentions direct hardware register access or MMIO address ranges",
+        "Mentions classifying functions by behavior (DMA, VI, PI, scheduler)",
+        "References resources/07-custom-runtime.md or 07-custom-runtime path",
+        "Mentions candidate naming or conservative labels before renaming",
+        "Distinguishes matching decomp next steps from jumping straight to N64Recomp"
+      ]
+    },
+    {
+      "id": 7,
+      "eval_name": "compiler-decompme",
+      "track": "A",
+      "prompt": "My ROM matches in pure assembly. splat yaml lists IDO as the compiler. What's the workflow to pick one small asm function and start converting it to matching C?",
+      "expected_output": "m2c + decomp.me workflow, resources/08-compiler-and-c.md, n64-decomp-ido skill for build integration, yaml asm to c transition.",
+      "files": [],
+      "expectations": [
+        "Mentions m2c or decomp.me for compiler matching",
+        "Says to pick a small simple function outside libultra first",
+        "References resources/08-compiler-and-c.md or 08-compiler path",
+        "Mentions n64-decomp-ido skill or asm-processor for IDO builds",
+        "Mentions changing asm to c in splat yaml or generating C stubs",
+        "Says asm ROM match should already be done before C conversion"
+      ]
+    },
+    {
+      "id": 8,
+      "eval_name": "boot-operational-phases",
+      "track": "both",
+      "prompt": "I just opened my N64 decomp workspace. splat split finished — asm/ exists, no configure.py yet, and I'm not sure if I'm doing matching decomp or a static recomp port later. Run the skill boot sequence: what do you inspect first and what phase am I in?",
+      "expected_output": "SKILL.md §2 boot, N64_PROJECT_STATE.md, 11-operational-phases Track A phase 2-3, report before acting.",
+      "files": [],
+      "expectations": [
+        "Mentions N64_PROJECT_STATE.md or project-state-template",
+        "References 11-operational-phases or operational phases / Track A matching",
+        "Says inspect workspace or detect phase before making changes",
+        "Points to matching-build next step not libultra or N64Recomp yet",
+        "Cites SKILL.md boot sequence or section 2 boot",
+        "References resources/03-matching-build or scripts/configure_min for next step"
+      ]
+    },
+    {
+      "id": 9,
+      "eval_name": "mcp-full-setup",
+      "track": "both",
+      "prompt": "I'm setting up Ghidra for my N64 decomp. I use Cursor and may add RMG MCP later. Walk me through N64LoaderWV, GhidraMCP, and client-agnostic MCP wiring for both the ghidra and rmg-n64-debugger servers.",
+      "expected_output": "N64LoaderWV ROM load first, GhidraMCP plugin/bridge, 15-mcp-client-setup autoconfig, mcp-servers template, optional RMG fork.",
+      "files": [],
+      "expectations": [
+        "Mentions N64LoaderWV or zeroKilo for N64 ROM import in Ghidra",
+        "Says load N64 ROM with N64LoaderWV before GhidraMCP evidence or MCP tools",
+        "References 15-mcp-client-setup.md or 15-mcp-client-setup path",
+        "Mentions MCP server id ghidra and optional rmg-n64-debugger",
+        "Says discover MCP client host before writing config paths",
+        "References examples/mcp-servers.template.json or mcp-servers template"
       ]
     }
   ]

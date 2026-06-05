@@ -19,7 +19,7 @@ This skill is a **playbook** for the AI agent. It does **not** include game ROMs
 | Included | Not included |
 |----------|----------------|
 | `SKILL.md` — router, boot, prohibitions, state protocol | Your ROM or decomp tree |
-| `resources/` — phased playbooks (01–13, `db-n64-index.md`) | N64Recomp / Ghidra installs |
+| `resources/` — phased playbooks (01–15, `db-n64-index.md`) | N64Recomp / Ghidra / RMG installs |
 | `scripts/configure_min.py` — first asm match helper | Matching game `code/` |
 | `examples/` — TOML + BSS yaml templates | |
 
@@ -30,8 +30,9 @@ This skill is a **playbook** for the AI agent. It does **not** include game ROMs
 - **Cursor** (or compatible agent) with skills support
 - **uv** + **splat64[mips]** for split workflows
 - **MIPS** assembler/linker for matching; **N64Recomp** + **N64ModernRuntime** for static ports
-- **Ghidra 11+** + [bethington/ghidra-mcp](https://github.com/bethington/ghidra-mcp) for MCP evidence (optional but recommended)
-- **Optional runtime MCP:** [thebardockgames/RMG](https://github.com/thebardockgames/RMG) MCP Debug Bridge (live RDRAM/registers/traces) — see `resources/14-rmg-mcp-playbook.md`; not bundled or required
+- **Ghidra 11+** + [N64LoaderWV](https://github.com/zeroKilo/N64LoaderWV) (N64 ROM loader) + [bethington/ghidra-mcp](https://github.com/bethington/ghidra-mcp) for static MCP evidence (optional but recommended)
+- **MCP client wiring:** `resources/15-mcp-client-setup.md` + `examples/mcp-servers.template.json` — client-agnostic `ghidra` + optional `rmg-n64-debugger` servers (Cursor, Claude, Codex, VS Code, …)
+- **Optional runtime MCP:** [thebardockgames/RMG](https://github.com/thebardockgames/RMG) MCP Debug Bridge — `resources/14-rmg-mcp-playbook.md`; not bundled or required
 - Pair **`n64-decomp-ido`** after IDO compiler identification
 
 ---
@@ -136,6 +137,6 @@ MIT — see [LICENSE](LICENSE). You must **own** any N64 software you analyze. N
 ## Links
 
 - **Releases:** https://github.com/DohmBoy64Bit/n64-decomp-skill/releases
-- [splat](https://github.com/ethteck/splat) · [N64Recomp](https://github.com/N64Recomp/N64Recomp) · [GhidraMCP](https://github.com/bethington/ghidra-mcp)
+- [splat](https://github.com/ethteck/splat) · [N64Recomp](https://github.com/N64Recomp/N64Recomp) · [N64LoaderWV](https://github.com/zeroKilo/N64LoaderWV) · [GhidraMCP](https://github.com/bethington/ghidra-mcp) · [RMG MCP](https://github.com/thebardockgames/RMG)
 - Related: [pcrecomp-skill](https://github.com/DohmBoy64Bit/pcrecomp-skill), [xboxrecomp-skill](https://github.com/DohmBoy64Bit/xboxrecomp-skill)
 - Design inspiration: [ps2-recomp-Agent-SKILL](https://github.com/hkmodd/ps2-recomp-Agent-SKILL)

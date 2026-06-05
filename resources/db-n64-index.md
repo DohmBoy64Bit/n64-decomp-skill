@@ -7,7 +7,8 @@
 | uv, splat install, toolchain | `01-environment-setup.md` |
 | New splat project, yaml, split, gitignore | `02-splat-setup.md` |
 | First matching ROM, BSS, `configure.py` | `03-matching-build.md` |
-| GhidraMCP setup or evidence | `04-ghidra-mcp.md` |
+| Ghidra, N64LoaderWV, GhidraMCP evidence | `04-ghidra-mcp.md` |
+| MCP client autoconfig (Ghidra + RMG) | `15-mcp-client-setup.md` |
 | Function inventory, jump tables, `symbol_addrs` | `05-function-discovery.md` |
 | libultra, n64sym, ultralib | `06-libultra.md` |
 | No libultra, direct MMIO | `07-custom-runtime.md` |

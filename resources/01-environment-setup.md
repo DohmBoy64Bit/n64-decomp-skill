@@ -1,6 +1,6 @@
 # Development Environment Check and Dependency Setup
 
-Read this when starting a new split, recompilation, GhidraMCP session, or host build. Verify tools before installing. Install only what the current phase needs.
+Read this when starting a new split, recompilation, Ghidra/N64LoaderWV/GhidraMCP session, or host build. Verify tools before installing. Install only what the current phase needs. MCP client wiring: `15-mcp-client-setup.md`.
 
 ## Core Tool Checks
 
@@ -132,7 +132,10 @@ OS and shell
 Tool versions
 Compiler and generator
 Ghidra version and install path
+N64LoaderWV extension version (https://github.com/zeroKilo/N64LoaderWV)
 GhidraMCP repository path and plugin version/commit
+MCP host and config path (15-mcp-client-setup.md)
+RMG MCP path (optional, 14-rmg-mcp-playbook.md)
 N64Recomp/N64ModernRuntime/RT64 commits
 Python environment command
 Build/split/recomp/run commands

@@ -1,9 +1,9 @@
 ---
 name: n64-decomp
 description: |
-  Nintendo 64 matching decompilation and N64Recomp static PC ports. Use whenever the user mentions splat, splat64, uv, baserom, matching ROM, configure_min, emit-configure, first asm build, bss_size, wrong BSS in asm, libultra, ultralib, m2c, decomp.me, custom runtime, direct MMIO, N64Recomp, N64ModernRuntime, RT64, relocatable overlays, jalr or indirect-call crashes, GhidraMCP, bethington/ghidra-mcp, symbol_addrs, VRAM or RDRAM mapping, RSP, RDP, PI DMA, cache writeback, function boundaries, N64_PROJECT_STATE, or Zelda64Recomp-style recomp - even for casual asks like "split my ROM", "fix splat yaml", or "port crashes after boot". Covers splat setup, configure_min matching builds, libultra or no-libultra paths, Ghidra evidence, phase-based triage, and persistent project state. Not for Xbox or PC x86 recomp (xboxrecomp/pcrecomp), SNES or GameCube emulation-only help, RetroArch or Dolphin playability tweaks, or generic embedded MIPS with no N64 ROM context.
+  Nintendo 64 matching decompilation and N64Recomp static PC ports. Use whenever the user mentions splat, splat64, uv, baserom, matching ROM, configure_min, emit-configure, first asm build, bss_size, wrong BSS in asm, libultra, ultralib, m2c, decomp.me, custom runtime, direct MMIO, N64Recomp, N64ModernRuntime, RT64, relocatable overlays, jalr or indirect-call crashes, GhidraMCP, bethington/ghidra-mcp, N64LoaderWV, zeroKilo/N64LoaderWV, MCP client setup, mcp.json, RMG MCP, symbol_addrs, VRAM or RDRAM mapping, RSP, RDP, PI DMA, cache writeback, function boundaries, N64_PROJECT_STATE, or Zelda64Recomp-style recomp - even for casual asks like "split my ROM", "fix splat yaml", "wire ghidra mcp", or "port crashes after boot". Covers splat setup, configure_min matching builds, libultra or no-libultra paths, Ghidra/N64LoaderWV evidence, MCP autoconfig, and persistent project state. Not for Xbox or PC x86 recomp (xboxrecomp/pcrecomp), SNES or GameCube emulation-only help, RetroArch or Dolphin playability tweaks, or generic embedded MIPS with no N64 ROM context.
 metadata:
-  mcpmarket-version: 1.0.0
+  mcpmarket-version: 1.2.0
 ---
 # N64 Decomp — Behavioral Constraint System
 
@@ -23,7 +23,8 @@ Load resource files **on demand** — not all at once. Full index: `resources/db
 | **uv, tools, clones** | `01-environment-setup.md` | Environment checklist |
 | **Splat / yaml / split** | `02-splat-setup.md` | Day-one splat workflow |
 | **First matching ROM, BSS** | `03-matching-build.md` | `configure_min`, linker, yaml BSS |
-| **Ghidra / GhidraMCP** | `04-ghidra-mcp.md` | MCP setup + evidence protocol |
+| **Ghidra / N64LoaderWV / GhidraMCP** | `04-ghidra-mcp.md` | ROM loader + MCP evidence protocol |
+| **MCP client wiring (any host)** | `15-mcp-client-setup.md` | Autoconfig `ghidra` + `rmg-n64-debugger` servers |
 | **Function ledger, jump tables** | `05-function-discovery.md` | Before `symbol_addrs` / recomp metadata |
 | **libultra block** | `06-libultra.md` | n64sym hints, ultralib match |
 | **No libultra / MMIO** | `07-custom-runtime.md` | Custom engine path |
@@ -167,7 +168,7 @@ get_xrefs_to / get_xrefs_from
 decompile_function (hint only — not final boundary proof)
 ```
 
-**NEVER ask the user to look in Ghidra for you** if GhidraMCP is available — gather narrow evidence yourself. Confirm **MIPS N64 program** is loaded (not another arch). Full protocol: `04-ghidra-mcp.md`.
+**NEVER ask the user to look in Ghidra for you** if GhidraMCP is available — gather narrow evidence yourself. Confirm **MIPS N64 program** loaded via [N64LoaderWV](https://github.com/zeroKilo/N64LoaderWV) (not another arch). Full protocol: `04-ghidra-mcp.md`. MCP host config: `15-mcp-client-setup.md`.
 
 ### §7.5 RMG MCP (optional)
 
@@ -182,7 +183,7 @@ run_until_symbol / add_symbol_breakpoint
 capture_instruction_trace / compare_trace_files
 ```
 
-Default WebSocket: `127.0.0.1:8765`. Full playbook: `14-rmg-mcp-playbook.md`. **Not required** for matching decomp or initial recomp triage.
+Default WebSocket: `127.0.0.1:8765`. Playbook: `14-rmg-mcp-playbook.md`. Client wiring: `15-mcp-client-setup.md`. **Not required** for matching decomp or initial recomp triage.
 
 ---
 
@@ -215,6 +216,7 @@ Details: `13-decisional-brain.md`.
 | `scripts/project-state-template.md` | Template for `N64_PROJECT_STATE.md` |
 | `examples/recomp-toml-skeleton.toml` | Minimal TOML shape |
 | `examples/splat-bss-subsegment.yaml` | BSS yaml pattern |
+| `examples/mcp-servers.template.json` | Ghidra + RMG MCP server template |
 
 ---
 
