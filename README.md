@@ -25,6 +25,64 @@ This skill is a **playbook** for the AI agent. It does **not** include game ROMs
 
 ---
 
+## Tracks — matching decomp vs static recomp
+
+The skill runs two related workflows. Both start from the same ROM/splat metadata; they diverge after you have trustworthy splits and boundaries. Full phase tables live in `resources/11-operational-phases.md`.
+
+| | **Track A — Matching decompilation** | **Track B — N64Recomp static port** |
+|---|----------------------------------------|-------------------------------------|
+| **Goal** | Reproduce the original ROM byte-for-byte | Lift game logic to native C/C++ with a PC host runtime |
+| **Success** | `configure.py --diff` clean; later per-file C match | Boot past indirect calls; stable VI/audio/input/saves |
+| **Primary tools** | splat, MIPS asm/linker, m2c/decomp.me, IDO/GCC | N64Recomp, N64ModernRuntime, librecomp, RT64 |
+| **Do not edit as first fix** | splat-generated `asm/*.s` | `RecompiledFuncs/` and other generated recomp output |
+| **Fix order** | yaml → re-split → rebuild | yaml/TOML/symbols → runtime overlays → host glue |
+
+**Shared foundation (both tracks):** Phase 0 ROM recon, splat split, first asm match or clean metadata, function ledger with evidence (`04-ghidra-mcp.md`, `05-function-discovery.md`). Do not start N64Recomp codegen on a dirty yaml or tentative-only boundaries.
+
+### Track A — Matching decompilation (phases 0–5)
+
+| Phase | Goal | Key resources | Exit criteria |
+|-------|------|---------------|---------------|
+| **0 — ROM recon** | Hash, byte order, entrypoint, save/RDRAM hints | `12-n64-hardware-subsystems.md` | Recorded in `N64_PROJECT_STATE.md` |
+| **1 — Splat** | uv, `create_config`, split, gitignore | `02-splat-setup.md` | `asm/` exists; no `hardware_regs` / `libultra_symbols` on day one |
+| **2 — First asm match** | Byte-identical ROM from asm only | `03-matching-build.md`, `scripts/configure_min.py` | `--diff` clean; BSS in yaml, not hand-patched asm |
+| **3 — Discovery** | Function ledger, boundaries, confidence | `05-function-discovery.md`, `04-ghidra-mcp.md` | `docs/function_ledger.md` before bulk `symbol_addrs` |
+| **4 — Runtime block** | libultra **or** custom MMIO path | `06-libultra.md` **or** `07-custom-runtime.md` | OS-layer boundaries and symbols identified |
+| **5 — Compiler + C** | IDO/GCC match, m2c / decomp.me | `08-compiler-and-c.md`, **`n64-decomp-ido`** skill | Per-file or per-module match |
+
+### Track B — N64Recomp static port (phases B0–B4)
+
+| Phase | Goal | Key resources | Exit criteria |
+|-------|------|---------------|---------------|
+| **B0 — Metadata clean** | Trustworthy splat/symbols/overlays | `02-splat-setup.md`, `05-function-discovery.md` | Enough symbols for indirect calls |
+| **B1 — Codegen** | N64Recomp emits C | `09-n64recomp-pipeline.md` | Entrypoint found; function count sane |
+| **B2 — Runtime** | librecomp, overlays, DMA | `09-n64recomp-pipeline.md` § Runtime | `register_overlays` / load order before `jalr` use |
+| **B3 — Renderer / host** | RT64, input, audio, saves | `09-n64recomp-pipeline.md` § Host | Boot past first indirect; VI/audio stable |
+| **B4 — Polish** | Launcher, UI, extras (optional) | `09-n64recomp-pipeline.md` § Optional host | Only if you request it |
+
+Reference recomp ports (**Zelda64Recomp**, **Kirby64Recomp**, **Dinosaur Planet Recompiled**) are cited for **CMake/layout patterns only** — not for copying symbols, overlays, or assets (`13-decisional-brain.md`).
+
+### Optional cross-track tooling
+
+| Tool | Track | Resource |
+|------|-------|----------|
+| Ghidra + N64LoaderWV + GhidraMCP | A & B (static evidence) | `04-ghidra-mcp.md`, `15-mcp-client-setup.md` |
+| RMG MCP debug bridge | B (live guest state, when stuck) | `14-rmg-mcp-playbook.md` |
+
+### Which track am I on?
+
+Inspect the workspace (game root may be a **sibling folder** of the skill install):
+
+| Signal | Likely track |
+|--------|----------------|
+| `configure.py`, matching `--diff`, no `*.recomp.toml` | **Track A** |
+| `*.recomp.toml`, `RecompiledFuncs/`, `external/N64Recomp` | **Track B** |
+| Only `baserom` + fresh yaml | **A** from phase 0, or **B** only after metadata is clean |
+
+The agent should report **track + phase + one next step** before wide refactors (`SKILL.md` §2 boot sequence).
+
+---
+
 ## Prerequisites
 
 - **Cursor** (or compatible agent) with skills support
@@ -95,11 +153,27 @@ Load resources/11-operational-phases.md and the boot files for my track
 Read n64-decomp/SKILL.md, then N64_PROJECT_STATE.md in my project. Resume from there.
 ```
 
-### Fresh matching decomp
+### Fresh matching decomp (Track A)
 
 ```
 Read n64-decomp/SKILL.md boot sequence. I have baserom.n64 at [PATH].
 Project root: [PATH]. Start Phase 0–1 (ROM recon + splat). Report before editing yaml.
+```
+
+### Fresh static recomp (Track B)
+
+```
+Read n64-decomp/SKILL.md boot sequence and resources/11-operational-phases.md.
+Project root: [PATH]. I want a N64Recomp PC port.
+Inspect baserom, yaml, asm/, symbols, and any existing *.recomp.toml.
+Report track B phase (B0–B4), gaps, and one next step before editing TOML or RecompiledFuncs/.
+```
+
+### Stuck / crash triage (either track)
+
+```
+Read n64-decomp/SKILL.md and resources/13-decisional-brain.md.
+Classify track and phase, then answer in the mandatory debug format (Phase, Structural Cause, Evidence, Fix, Verification).
 ```
 
 ---
