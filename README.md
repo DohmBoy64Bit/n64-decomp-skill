@@ -176,6 +176,35 @@ Read n64-decomp/SKILL.md and resources/13-decisional-brain.md.
 Classify track and phase, then answer in the mandatory debug format (Phase, Structural Cause, Evidence, Fix, Verification).
 ```
 
+> **Why this works:** The prompts force *read first, detect second, ask third, act last* — same pattern as [ps2-recomp-Agent-SKILL](https://github.com/hkmodd/ps2-recomp-Agent-SKILL). The agent cannot skip boot files, assume paths, or start wide yaml/TOML/runtime edits without your go-ahead.
+
+---
+
+## How to collaborate (human-in-the-loop)
+
+N64 matching decomp and static recomp still need your eyes on hardware and metadata:
+
+- **Monitor `N64_PROJECT_STATE.md`** — open it in split-screen. The agent should update phase, paths, mapping table, and triage rows after major actions. If it hallucinated an address or phase, correct the Markdown directly; the agent re-reads it on the next boot or context refresh (`SKILL.md` §6).
+- **Beware context degradation** — long sessions can make the agent ask obvious questions or forget BSS-in-yaml rules. Stop, open a **new chat**, and use **Quick resume** above. The skill’s degradation canary (every 15 tool calls) is in `SKILL.md` §6.
+- **Prepare Ghidra yourself** — the agent drives GhidraMCP, but you import the ROM with [N64LoaderWV](https://github.com/zeroKilo/N64LoaderWV), confirm **MIPS N64** (not another arch), leave CodeBrowser open, and wire MCP per `resources/15-mcp-client-setup.md`.
+- **Optional RMG MCP** — only for runtime guest PC/register evidence when static triage stalls (`resources/14-rmg-mcp-playbook.md`). Not required for matching decomp or first recomp bring-up.
+- **Let builds finish** — splat split, `configure.py --build`, and N64Recomp codegen can take time. The agent should read full log output before claiming success (`SKILL.md` §3 prohibition 8).
+- **Two workspaces** — skill install (playbook) vs your game/decomp root (ROM, yaml, asm, TOML). Game files are often a **sibling folder**; tell the agent the project root once and ensure it lands in `N64_PROJECT_STATE.md`.
+
+---
+
+## Troubleshooting
+
+| Problem | Tell the agent |
+|---------|----------------|
+| It asks you to hand-edit `asm/*.s` or `RecompiledFuncs/` first | *"Read your skill §3 — fix yaml/TOML/symbols/runtime before generated trees."* |
+| It keeps guessing the same crash | *"Circuit breaker — stop patching. Update `N64_PROJECT_STATE.md` and use `13-decisional-brain.md` debug format with evidence."* |
+| It forgot phase, track, or an address | *"Context refresh — read `N64_PROJECT_STATE.md` and `11-operational-phases.md`."* |
+| It wants you to look in Ghidra manually | *"Use GhidraMCP yourself — see `04-ghidra-mcp.md`. Confirm N64LoaderWV MIPS program is loaded."* |
+| It claims match/recomp success without logs | *"Show the actual `configure.py --diff` or N64Recomp/build output before we continue."* |
+| It mixes matching yaml fixes with recomp runtime patches | *"Phase-correct triage only — separate splat from TOML/runtime per `10-agent-guardrails.md`."* |
+| MCP tools fail or wrong arch in Ghidra | See **Troubleshooting** in `resources/15-mcp-client-setup.md` (connection, N64LoaderWV import, server paths). |
+
 ---
 
 ## Skill layout
@@ -220,7 +249,7 @@ MIT — see [LICENSE](LICENSE). You must **own** any N64 software you analyze. N
 
 ## Links
 
-- **Releases:** https://github.com/DohmBoy64Bit/n64-decomp-skill/releases (current: **v1.2.1**)
+- **Releases:** https://github.com/DohmBoy64Bit/n64-decomp-skill/releases (current: **v1.2.2**)
 - [splat](https://github.com/ethteck/splat) · [N64Recomp](https://github.com/N64Recomp/N64Recomp) · [N64LoaderWV](https://github.com/zeroKilo/N64LoaderWV) · [GhidraMCP](https://github.com/bethington/ghidra-mcp) · [RMG MCP](https://github.com/thebardockgames/RMG)
 - Related: [pcrecomp-skill](https://github.com/DohmBoy64Bit/pcrecomp-skill), [xboxrecomp-skill](https://github.com/DohmBoy64Bit/xboxrecomp-skill)
 - Design inspiration: [ps2-recomp-Agent-SKILL](https://github.com/hkmodd/ps2-recomp-Agent-SKILL)
