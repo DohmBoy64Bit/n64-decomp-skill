@@ -1,0 +1,71 @@
+# ⛔ QUICK RULES (mandatory re-read)
+
+1. **Generated output:** NEVER hand-edit `asm/*.s` or `RecompiledFuncs/` as the primary fix — fix yaml, TOML, symbols, overlays, runtime.
+2. **Addresses:** NEVER subtract `0x80000000` blindly — use segment/overlay mapping (`12-n64-hardware-subsystems.md`).
+3. **Evidence:** NEVER promote Ghidra decompiler-only boundaries — raw MIPS + delay slots.
+4. **Lawful use:** NEVER request or distribute ROMs or copyrighted assets — hashes and logs only.
+5. **Phase:** NEVER mix splat fixes with recomp runtime patches in one undifferentiated change list.
+
+---
+
+# N64 Project — State
+> Auto-maintained by agent. DO NOT DELETE. Read at session start; update after every major action.
+
+## Boot Status
+- [ ] Located skill `resources/` directory
+- [ ] Loaded `11-operational-phases.md` (or confirmed resume phase)
+- [ ] Loaded boot references for active track (matching: `02`+`03` / recomp: `02`+`09`)
+
+## Project Info
+- **Game / project**:
+- **Track**: matching-decomp | static-recomp | both
+- **ROM hash (SHA-256)**:
+- **Byte order / region**:
+- **Entrypoint (header)**:
+- **RDRAM**: 4 MiB | 8 MiB (Expansion Pak) | unknown
+- **Save type**: EEPROM | SRAM | FlashRAM | Controller Pak | none | unknown
+
+## Workspace Paths
+- **Decomp / game root**:
+- **Skill install path** (if known):
+- **baserom path** (not committed):
+- **splat yaml**:
+- **N64Recomp TOML** (if recomp):
+- **Ghidra program** (name + arch):
+
+## Current Phase
+`PHASE_SETUP` — see `11-operational-phases.md`
+
+## Build / Tooling
+- **uv / splat**: 
+- **Matching**: `configure.py` present? linker script?
+- **N64Recomp build**: 
+- **GhidraMCP**: port / connected / correct MIPS program loaded?
+- **RMG MCP (optional)**: bridge_status / ROM loaded / `server.py` / symbols `.map` loaded?
+
+## Active Commands
+```bash
+# Record verbatim commands that work — do not reconstruct from memory
+```
+
+## Mapping Table
+```text
+Name        ROM Start   ROM End     VRAM Start  RAM Load   Notes
+```
+
+## Crashes & Triage
+| Guest PC / context | Phase | Structural cause | Fix layer | Status |
+|--------------------|-------|------------------|-----------|--------|
+| | | | | |
+
+## Function Ledger Status
+- **Ledger path**: `docs/function_ledger.md`
+- **Last promoted to symbol_addrs**:
+
+## Learned Patterns
+> Session close: write patterns (`X causes Y, fix with Z`), not raw event logs.
+
+- 
+
+## Known Issues / TODOs
+- [ ] 

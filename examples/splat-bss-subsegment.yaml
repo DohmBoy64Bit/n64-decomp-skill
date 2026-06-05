@@ -1,0 +1,11 @@
+# BSS fix pattern — derive BSS_START/BSS_SIZE from entry asm (e.g. asm/1000.s), not by editing asm.
+# See resources/03-matching-build.md
+
+- name: main
+  type: code
+  start: 0x1050
+  vram: 0x80001050
+  bss_size: 0x7DAC0
+  subsegments:
+    - [0x1050, asm]
+    - { start: 0xB1BD0, type: .bss, vram: 0x800E2E00 }

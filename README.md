@@ -1,31 +1,38 @@
 # n64-decomp (Cursor Agent Skill)
 
-Agent skill for **Nintendo 64 matching decompilation** and **N64Recomp static PC ports** — splat/uv setup, first assembly-only ROM match (`configure_min.py`), GhidraMCP evidence, libultra or custom-runtime paths, and phase-based recomp triage.
+Agent skill for **Nintendo 64 matching decompilation** and **N64Recomp static PC ports** — structured like a behavioral constraint system ([ps2-recomp-Agent-SKILL](https://github.com/hkmodd/ps2-recomp-Agent-SKILL) design): decision router, boot sequence, persistent `N64_PROJECT_STATE.md`, circuit breakers, and on-demand `resources/`.
 
-This skill is a **playbook and reference layer** for the AI agent. It does **not** include game ROMs, splat output, N64Recomp binaries, or your decomp project tree.
+This skill is a **playbook** for the AI agent. It does **not** include game ROMs, splat output, or N64Recomp binaries.
+
+---
+
+## How to treat the agent
+
+1. **Autonomous within guardrails** — let it run splat, configure, and read logs; it should fix yaml/TOML/runtime before generated trees.
+2. **Persistent memory** — the agent maintains `N64_PROJECT_STATE.md` in your project (external hippocampus). Resume weeks later by pointing at that file.
+3. **Circuit breakers** — after repeated failures on the same crash, it should stop guessing and ask for narrow evidence (see `resources/10-agent-guardrails.md`).
 
 ---
 
 ## What you get
 
-| Included in the skill | Not included (you provide separately) |
-|----------------------|----------------------------------------|
-| `SKILL.md` — routing, core rules, ROM/address discipline, debug format | Your `baserom` / `baserom.z64` (you must own the game) |
-| `references/` — splat, build, GhidraMCP, libultra, N64Recomp, env setup | Clones of [N64Recomp](https://github.com/N64Recomp/N64Recomp), Ghidra, ultralib |
-| `references/configure_min.py` — starter matching `configure.py` emitter | Full game `asm/`, `code/`, or matching decomp repo |
-| Eval prompts under `evals/` (development only) | Python 3.10+, uv, MIPS toolchain, IDO/GCC when matching C |
+| Included | Not included |
+|----------|----------------|
+| `SKILL.md` — router, boot, prohibitions, state protocol | Your ROM or decomp tree |
+| `resources/` — phased playbooks (01–13, `db-n64-index.md`) | N64Recomp / Ghidra installs |
+| `scripts/configure_min.py` — first asm match helper | Matching game `code/` |
+| `examples/` — TOML + BSS yaml templates | |
 
 ---
 
-## Requirements
+## Prerequisites
 
 - **Cursor** (or compatible agent) with skills support
-- **uv** + **splat64[mips]** for ROM split workflows
-- **Matching:** MIPS assembler/linker, splat linker script, optional [decomp.me](https://decomp.me) for compiler ID
-- **Recomp:** N64Recomp + N64ModernRuntime/librecomp (or Zelda64Recomp-style layout as reference)
-- **Ghidra 11+** + [bethington/ghidra-mcp](https://github.com/bethington/ghidra-mcp) when using MCP evidence workflows
-
-Pair with the **`n64-decomp-ido`** skill after you identify an IDO compiler for C matching.
+- **uv** + **splat64[mips]** for split workflows
+- **MIPS** assembler/linker for matching; **N64Recomp** + **N64ModernRuntime** for static ports
+- **Ghidra 11+** + [bethington/ghidra-mcp](https://github.com/bethington/ghidra-mcp) for MCP evidence (optional but recommended)
+- **Optional runtime MCP:** [thebardockgames/RMG](https://github.com/thebardockgames/RMG) MCP Debug Bridge (live RDRAM/registers/traces) — see `resources/14-rmg-mcp-playbook.md`; not bundled or required
+- Pair **`n64-decomp-ido`** after IDO compiler identification
 
 ---
 
@@ -33,74 +40,59 @@ Pair with the **`n64-decomp-ido`** skill after you identify an IDO compiler for 
 
 ### Option 1: Skill folder
 
-Copy or symlink this directory to a skills path Cursor reads:
-
 | Scope | Path |
 |-------|------|
-| Personal (all projects) | `~/.cursor/skills/n64-decomp/` |
-| Agents (Codex-style) | `~/.agents/skills/n64-decomp/` |
-| Project (repo-only) | `.cursor/skills/n64-decomp/` |
+| Personal | `~/.cursor/skills/n64-decomp/` |
+| Agents | `~/.agents/skills/n64-decomp/` |
+| Project | `.cursor/skills/n64-decomp/` |
 
-The folder must contain `SKILL.md` at its root.
+### Option 2: Download `n64-decomp.skill` (recommended)
 
-### Option 2: Download `n64-decomp.skill` (recommended for install)
+**[GitHub Releases](https://github.com/DohmBoy64Bit/n64-decomp-skill/releases)** — one-file Cursor import (`SKILL.md` + `resources/` + `scripts/` + `examples/`; no `evals/`).
 
-**[GitHub Releases](https://github.com/DohmBoy64Bit/n64-decomp-skill/releases)** attach a pre-built **`n64-decomp.skill`** file.
-
-| What it is | What it is for |
-|------------|----------------|
-| A **ZIP archive** (`.skill` extension) of this skill folder | **One-file install** in Cursor — import without cloning this repo |
-| Contains `SKILL.md` + `references/` | Agent playbook and quickrefs |
-| Does **not** contain your game ROM or decomp tree | You supply lawful ROM hashes and project files |
-
-**Steps:**
-
-1. Open [Releases](https://github.com/DohmBoy64Bit/n64-decomp-skill/releases) and download **`n64-decomp.skill`** from the latest tag.
-2. Install through Cursor’s skill import UI (or unpack into `~/.cursor/skills/n64-decomp/`).
-
-`evals/` and `n64-decomp-workspace/` are omitted from the package (development-only).
-
-### Option 3: Build `.skill` yourself
-
-From [skill-creator](https://github.com/anthropics/skills) `package_skill.py`:
+### Option 3: Build `.skill`
 
 ```powershell
-# Stage skill-only tree (no eval workspace)
 $stage = "dist\n64-decomp"
-New-Item -ItemType Directory -Force -Path $stage | Out-Null
-Copy-Item SKILL.md, references -Destination $stage -Recurse -Force
+New-Item -ItemType Directory -Force -Path "$stage\resources","$stage\scripts","$stage\examples" | Out-Null
+Copy-Item SKILL.md $stage\
+Copy-Item resources\* $stage\resources\
+Copy-Item scripts\* $stage\scripts\
+Copy-Item examples\* $stage\examples\
 cd path\to\skill-creator
 python -m scripts.package_skill E:\SkillDev\N64decomp\dist\n64-decomp E:\SkillDev\N64decomp\dist
 ```
 
-Produces `n64-decomp.skill`. The packager skips top-level `evals/` by default.
-
 ---
 
-## How to use in Cursor
+## Start a session
 
-1. Open a workspace with your N64 decomp or recomp project (or create one with splat).
-2. Start an **Agent** chat.
-3. **Attach** the `n64-decomp` skill or describe a matching task (splat setup, BSS yaml, overlay `jalr` crash, Ghidra jump table, first asm match).
-4. Example prompts:
-   - *“I have baserom.n64 — walk me through splat setup and gitignore.”*
-   - *“Splat split done — next step for first matching ROM before libultra?”*
-   - *“N64Recomp found entrypoint but crashes on indirect call with overlays.”*
-   - *“Ghidra put a function boundary in my jump table at 0x8012A400 — verify before symbol_addrs.”*
+### Universal starter prompt
 
-The agent should follow **your** ROM evidence and bundled `references/` — not invent TOML keys, APIs, or boundaries.
+```
+Read n64-decomp/SKILL.md and execute the §2 BOOT SEQUENCE.
 
-### Quick matching path (after split)
+Load resources/11-operational-phases.md and the boot files for my track
+(matching: 02-splat-setup.md + 03-matching-build.md;
+ recomp: 02-splat-setup.md + 09-n64recomp-pipeline.md).
 
-```bash
-uv run -m splat create_config baserom.n64
-uv run -m splat split <game>.yaml
-python references/configure_min.py --emit-configure --game <game>
-# Add <game>.ld from splat, then:
-python configure.py --clean && python configure.py --build
+1. INSPECT my workspace for N64_PROJECT_STATE.md, baserom, yaml, asm/, configure.py,
+   RecompiledFuncs/, *.recomp.toml. Game files may be in a sibling folder — ask if missing.
+2. REPORT phase, track, and one concrete next step. Wait for my go-ahead on wide changes.
 ```
 
-Wrong BSS in `asm/1000.s`? Fix `bss_size` / `.bss` in yaml and re-split — **do not** hand-edit generated `asm/*.s`.
+### Quick resume (new chat)
+
+```
+Read n64-decomp/SKILL.md, then N64_PROJECT_STATE.md in my project. Resume from there.
+```
+
+### Fresh matching decomp
+
+```
+Read n64-decomp/SKILL.md boot sequence. I have baserom.n64 at [PATH].
+Project root: [PATH]. Start Phase 0–1 (ROM recon + splat). Report before editing yaml.
+```
 
 ---
 
@@ -109,56 +101,41 @@ Wrong BSS in `asm/1000.s`? Fix `bss_size` / `.bss` in yaml and re-split — **do
 ```
 n64-decomp/
 ├── README.md
-├── LICENSE
-├── SKILL.md
-├── evals/
-│   ├── evals.json
-│   └── eval_set_trigger.json
-├── references/
-│   ├── splat-setup.md
-│   ├── build-system.md
+├── SKILL.md                 # Behavioral constraint hub (read first)
+├── resources/
+│   ├── 01-environment-setup.md … 09-n64recomp-pipeline.md
+│   ├── 10-agent-guardrails.md
+│   ├── 11-operational-phases.md
+│   ├── 12-n64-hardware-subsystems.md
+│   ├── 13-decisional-brain.md
+│   ├── 14-rmg-mcp-playbook.md   # Optional live emulator MCP
+│   └── db-n64-index.md      # Master router
+├── scripts/
 │   ├── configure_min.py
-│   ├── environment-setup.md
-│   ├── ghidra-mcp.md
-│   ├── function-discovery.md
-│   ├── libultra.md
-│   ├── custom-runtime.md
-│   ├── compiler-and-c.md
-│   └── n64recomp.md
+│   └── project-state-template.md
+├── examples/
+│   ├── recomp-toml-skeleton.toml
+│   └── splat-bss-subsegment.yaml
+└── evals/                   # Dev only (not in .skill)
 ```
-
----
-
-## Skill vs `.skill` vs your game repo
-
-| Artifact | Purpose |
-|----------|---------|
-| **This Git repo** | Source for `SKILL.md`, references, README; clone to contribute |
-| **Release `n64-decomp.skill`** | Pre-built ZIP for Cursor install |
-| **Skill folder** (after install) | Live copy the agent reads |
-| **Your decomp/recomp project** | ROM, yaml, asm, TOML, runtime — always separate |
 
 ---
 
 ## Development / evals
 
-Built with the **skill-creator** workflow (iterations 1–6 under `n64-decomp-workspace/`, not shipped in `.skill`). Iteration 6: with_skill **100%**, baseline **85.7%** on heuristic assertions.
-
-To improve: edit `SKILL.md` or `references/`, re-run evals, repackage with `package_skill.py`.
+Skill-creator evals under `evals/`; benchmark runs in `n64-decomp-workspace/` (gitignored). Iteration 6: with_skill **100%**, baseline **85.7%**.
 
 ---
 
-## License and legal
+## License
 
-- Skill text: **MIT** (this repo).
-- You must **own** any N64 software you analyze or recompile. Do not distribute copyrighted ROMs, SDK leaks, or redistributable game assets. The skill will not request ROM files.
+MIT — see [LICENSE](LICENSE). You must **own** any N64 software you analyze. No ROM distribution.
 
 ---
 
 ## Links
 
-- **Releases (`.skill` download):** https://github.com/DohmBoy64Bit/n64-decomp-skill/releases
-- [splat / splat64](https://github.com/ethteck/splat)
-- [N64Recomp](https://github.com/N64Recomp/N64Recomp)
-- [bethington/ghidra-mcp](https://github.com/bethington/ghidra-mcp)
+- **Releases:** https://github.com/DohmBoy64Bit/n64-decomp-skill/releases
+- [splat](https://github.com/ethteck/splat) · [N64Recomp](https://github.com/N64Recomp/N64Recomp) · [GhidraMCP](https://github.com/bethington/ghidra-mcp)
 - Related: [pcrecomp-skill](https://github.com/DohmBoy64Bit/pcrecomp-skill), [xboxrecomp-skill](https://github.com/DohmBoy64Bit/xboxrecomp-skill)
+- Design inspiration: [ps2-recomp-Agent-SKILL](https://github.com/hkmodd/ps2-recomp-Agent-SKILL)

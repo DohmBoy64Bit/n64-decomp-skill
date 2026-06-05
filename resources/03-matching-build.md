@@ -4,16 +4,16 @@ Read this when `asm/` exists after splat split and you need the **first byte-mat
 
 ## Initial Setup
 
-Use [configure_min.py](configure_min.py) — the skill-bundled helper for status, splat commands, and emitting a starter `configure.py`.
+Use `scripts/configure_min.py` in the skill bundle — status, splat commands, and emitting a starter `configure.py`.
 
-If the script lives under `references/` in the skill repo, run it from the **decomp project root** (copy the script or invoke by path). Do not skip `--emit-configure` and hand-write a Pokemon Snap-style multi-target configure on day one.
+Run from the **decomp project root** (invoke by absolute path to the skill's `scripts/configure_min.py`, or copy the script into the project). Do not skip `--emit-configure` and hand-write a complex multi-target configure on day one.
 
 ```bash
 # From project root (after uv + baserom present)
-python references/configure_min.py --status
-python references/configure_min.py --create-config --rom baserom.n64
-python references/configure_min.py --split --yaml <game>.yaml
-python references/configure_min.py --emit-configure --game <game>
+python path/to/n64-decomp/scripts/configure_min.py --status
+python path/to/n64-decomp/scripts/configure_min.py --create-config --rom baserom.n64
+python path/to/n64-decomp/scripts/configure_min.py --split --yaml <game>.yaml
+python path/to/n64-decomp/scripts/configure_min.py --emit-configure --game <game>
 ```
 
 `--emit-configure` writes a starter `configure.py` + ninja rules for all `asm/**/*.s`. You still need a linker script (from splat or project docs) and MIPS toolchain paths. Do not use complex multi-target configure examples until C compilation is needed.

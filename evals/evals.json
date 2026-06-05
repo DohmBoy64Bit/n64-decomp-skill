@@ -26,7 +26,7 @@
         "Mentions indirect call / jalr target or runtime lookup evidence",
         "Uses structured debug triage with Phase: and Structural Cause: labels",
         "Distinguishes codegen success from incomplete host runtime bring-up",
-        "References references/n64recomp.md or N64ModernRuntime/librecomp overlay registration"
+        "References resources/09-n64recomp-pipeline.md or N64ModernRuntime/librecomp overlay registration"
       ]
     },
     {
@@ -49,12 +49,12 @@
       "expected_output": "Points to configure_min.py --emit-configure, assembly-only matching, linker script still required, do not edit asm for fixes.",
       "files": [],
       "expectations": [
-        "References configure_min.py or references/configure_min.py",
+        "References configure_min.py or scripts/configure_min.py",
         "Mentions --emit-configure or emit-configure for starter configure.py",
         "Says compiler version does not matter yet for assembly-only matching",
         "Says not to hand-edit asm files for linker or BSS fixes",
         "Mentions linker script or .ld still required after emit-configure",
-        "References references/build-system.md by path"
+        "References resources/03-matching-build.md by path"
       ]
     },
     {
@@ -67,7 +67,7 @@
         "Mentions bss_size in the main segment yaml or a .bss subsegment",
         "Says to derive BSS_START/BSS_SIZE from entry asm as evidence for yaml, not as the permanent fix in asm",
         "Mentions re-running split or configure clean/rebuild after yaml fix",
-        "References references/build-system.md or build-system.md BSS section",
+        "References resources/03-matching-build.md or 03-matching-build BSS section",
         "Says splat regenerates asm and requires yaml fix not permanent asm patch"
       ]
     }

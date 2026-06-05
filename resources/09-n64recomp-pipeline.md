@@ -19,7 +19,7 @@ Before N64Recomp:
 4. ELF or symbol metadata N64Recomp can consume
 5. Generated folders treated as artifacts — fix YAML/symbols/metadata first
 
-Raw ROM only → guide through [splat-setup.md](splat-setup.md) first.
+Raw ROM only → guide through `02-splat-setup.md` first.
 
 ## Build N64Recomp
 
@@ -216,3 +216,7 @@ Prefer N64Recomp patch/single-file-output over editing generated output. Link pa
 - function around failing `jal`, `jalr`, DMA, overlay load, RCP wait
 
 Do not ask for ROM files or copyrighted assets.
+
+## Optional: runtime emulator MCP
+
+If static triage stalls and the user has [thebardockgames/RMG](https://github.com/thebardockgames/RMG) with MCP bridge: see **`14-rmg-mcp-playbook.md`** for `bridge_status`, guest PC/register inspection, and trace compare. This does not replace overlay registration or TOML fixes.

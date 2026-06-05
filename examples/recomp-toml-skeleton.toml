@@ -1,0 +1,19 @@
+# Minimal N64Recomp TOML skeleton — adapt to your N64Recomp version and project layout.
+# See resources/09-n64recomp-pipeline.md for full workflow.
+
+[rom]
+# input_path = "baserom.z64"
+# entrypoint = 0x80000400
+
+[output]
+# output_func_path = "RecompiledFuncs"
+# output_source_path = "RecompiledSources"
+
+# Add when overlays are documented:
+# relocatable_sections_path = "overlays.txt"
+
+# Example instruction patch — document why; use sparingly
+# [[patches.instruction]]
+# func = "FunctionName"
+# vram = 0x80123456
+# value = 0x00000000  # nop

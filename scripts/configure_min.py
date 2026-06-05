@@ -11,10 +11,10 @@ Typical layout (override with flags):
 
 Commands (run from project_root):
 
-  python references/configure_min.py --status
-  python references/configure_min.py --create-config [--rom baserom.n64]
-  python references/configure_min.py --split [--yaml game.yaml]
-  python references/configure_min.py --emit-configure [--game game]
+  python scripts/configure_min.py --status
+  python scripts/configure_min.py --create-config [--rom baserom.n64]
+  python scripts/configure_min.py --split [--yaml game.yaml]
+  python scripts/configure_min.py --emit-configure [--game game]
 
 --emit-configure writes a starter configure.py + build.ninja rules for
 assembly-only matching. Adjust VERSION, LD_SCRIPT, and toolchain paths
