@@ -10,6 +10,8 @@
 
 Upstream fork: [thebardockgames/RMG](https://github.com/thebardockgames/RMG) (Mupen64Plus-based **RMG** + Qt6 WebSocket bridge + Python MCP `server.py`). Based on [Rosalie241/RMG](https://github.com/Rosalie241/RMG).
 
+**Alternative guest runtime:** [DohmBoy64Bit/Mupen64MCP](https://github.com/DohmBoy64Bit/Mupen64MCP) — TCP daemon + `n64-debug-mcp` (`17-mupen64mcp-playbook.md`, server id `n64-debug-mcp`). Prefer Mupen64MCP when the user has that build; use RMG when they have RMG only.
+
 ---
 
 ## When to load this file
@@ -170,7 +172,8 @@ Use for **evidence**, not as a substitute for fixing yaml/TOML/runtime layers (`
 | `16-cdb-debug-playbook.md` | Native recomp `.exe`, CDB, `.cdb.txt` hit/bypass (Windows) |
 | `09-n64recomp-pipeline.md` | Overlay/runtime fixes before emulator patching |
 | `12-n64-hardware-subsystems.md` | Address spaces (RDRAM vs VRAM vs host) |
-| `14-rmg-mcp-playbook.md` | **Optional** live CPU/RDRAM when static path stalls |
+| `17-mupen64mcp-playbook.md` | **Alternative** guest runtime (Mupen64MCP) |
+| `14-rmg-mcp-playbook.md` | **This file** — RMG live CPU/RDRAM when static path stalls |
 
 **NEVER ask the user to read RMG for you** if RMG MCP is connected — use tools. **NEVER** treat emulator memory writes as the primary fix for metadata bugs.
 

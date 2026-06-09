@@ -1,9 +1,9 @@
 ---
 name: n64-decomp
 description: |
-  Nintendo 64 matching decompilation and N64Recomp static PC ports. Use for splat, uv, baserom, matching ROM, configure_min, BSS yaml, libultra, ultralib, m2c, decomp.me, custom runtime, MMIO, N64Recomp, overlays, jalr crashes, GhidraMCP, N64LoaderWV, overlay dispatch tables, CDB cdb.exe trace logs, PowerShell cdb wrappers, MCP client setup, RMG MCP, symbol_addrs, VRAM/RDRAM, RSP/RDP, function boundaries, N64_PROJECT_STATE, or Zelda64Recomp ports - including "split my ROM", "fix splat yaml", "wire ghidra mcp", or "debug recomp exe with cdb". Covers matching builds, Ghidra static analysis, host CDB dynamic traces, MCP autoconfig, phase triage, project state. Not Xbox/PC x86 recomp, SNES/GameCube emu-only, or generic MIPS without N64 ROM context.
+  Nintendo 64 matching decompilation and N64Recomp static PC ports. Use for splat, uv, baserom, matching ROM, configure_min, BSS yaml, libultra, ultralib, m2c, decomp.me, custom runtime, MMIO, N64Recomp, overlays, jalr crashes, GhidraMCP, N64LoaderWV, overlay dispatch tables, CDB cdb.exe trace logs, PowerShell cdb wrappers, MCP client setup, Mupen64MCP, n64-debug-mcp, RMG MCP, symbol_addrs, VRAM/RDRAM, RSP/RDP, function boundaries, N64_PROJECT_STATE, or Zelda64Recomp ports - including "split my ROM", "fix splat yaml", "wire ghidra mcp", "clone build Mupen64MCP", or "debug recomp exe with cdb". Covers matching builds, Ghidra static analysis, host CDB dynamic traces, guest emulator MCP, MCP autoconfig, phase triage, project state. Not Xbox/PC x86 recomp, SNES/GameCube emu-only, or generic MIPS without N64 ROM context.
 metadata:
-  mcpmarket-version: 1.3.0
+  mcpmarket-version: 1.4.0
 ---
 # N64 Decomp — Behavioral Constraint System
 
@@ -25,14 +25,15 @@ Load resource files **on demand** — not all at once. Full index: `resources/db
 | **First matching ROM, BSS** | `03-matching-build.md` | `configure_min`, linker, yaml BSS |
 | **Ghidra / N64LoaderWV / GhidraMCP** | `04-ghidra-mcp.md` | Static baserom, overlays, boundaries |
 | **CDB / host EXE trace (Windows)** | `16-cdb-debug-playbook.md` | `.cdb.txt` hit/bypass, native recomp crashes |
-| **MCP client wiring (any host)** | `15-mcp-client-setup.md` | Autoconfig `ghidra` + `rmg-n64-debugger` servers |
+| **MCP client wiring (any host)** | `15-mcp-client-setup.md` | Autoconfig `ghidra` + optional `n64-debug-mcp` / `rmg-n64-debugger` |
 | **Function ledger, jump tables** | `05-function-discovery.md` | Before `symbol_addrs` / recomp metadata |
 | **libultra block** | `06-libultra.md` | n64sym hints, ultralib match |
 | **No libultra / MMIO** | `07-custom-runtime.md` | Custom engine path |
 | **decomp.me / asm→C** | `08-compiler-and-c.md` | Compiler identification |
 | **N64Recomp / TOML / RT64** | `09-n64recomp-pipeline.md` | Codegen + runtime + overlays |
 | **DMA, RSP, saves, addresses** | `12-n64-hardware-subsystems.md` | Hardware + mapping discipline |
-| **Live emulator debug / trace A/B (optional)** | `14-rmg-mcp-playbook.md` | RMG MCP bridge — only if user has it |
+| **Mupen64MCP guest debug (optional)** | `17-mupen64mcp-playbook.md` | Clone/build Mupen64Plus MCP — preferred when user has it |
+| **RMG guest debug / trace A/B (optional)** | `14-rmg-mcp-playbook.md` | RMG WebSocket bridge — alternative runtime MCP |
 | **Unknown topic** | `db-n64-index.md` | Router to the right file |
 
 > Paths are relative to this skill's `resources/` directory. Locate it once at boot (step A.0) and remember.
@@ -171,7 +172,21 @@ decompile_function (hint only — not final boundary proof)
 
 **NEVER ask the user to look in Ghidra for you** if GhidraMCP is available — gather narrow evidence yourself. Confirm **MIPS N64 program** loaded via [N64LoaderWV](https://github.com/zeroKilo/N64LoaderWV) (not another arch). Full protocol: `04-ghidra-mcp.md`. MCP host config: `15-mcp-client-setup.md`.
 
-### §7.5 RMG MCP (optional)
+### §7.5 Mupen64MCP (optional guest runtime)
+
+Only if the user has [DohmBoy64Bit/Mupen64MCP](https://github.com/DohmBoy64Bit/Mupen64MCP) cloned, built, and MCP server `n64-debug-mcp` connected:
+
+```
+n64_status / n64_start_daemon
+n64_get_registers / n64_get_pc / n64_read_memory
+n64_add_exec_breakpoint / n64_wait_for_breakpoint
+n64_detect_os / n64_capture_pi_dma / n64_dl_decode
+n64_trace_callchain / n64_mark_game_state
+```
+
+Daemon TCP: `127.0.0.1:9876`. Clone + build: `17-mupen64mcp-playbook.md`. Client wiring: `15-mcp-client-setup.md` (server id `n64-debug-mcp`). **Not required** for matching decomp or initial recomp triage.
+
+### §7.5b RMG MCP (optional — alternative guest runtime)
 
 Only if the user has [thebardockgames/RMG](https://github.com/thebardockgames/RMG) built with `MCP_BRIDGE=ON` and `server.py` connected:
 
@@ -184,7 +199,7 @@ run_until_symbol / add_symbol_breakpoint
 capture_instruction_trace / compare_trace_files
 ```
 
-Default WebSocket: `127.0.0.1:8765`. Playbook: `14-rmg-mcp-playbook.md`. Client wiring: `15-mcp-client-setup.md`. **Not required** for matching decomp or initial recomp triage.
+Default WebSocket: `127.0.0.1:8765`. Playbook: `14-rmg-mcp-playbook.md`. Client wiring: `15-mcp-client-setup.md`. Use Mupen64MCP or RMG — not both required.
 
 ### §7.6 CDB (native recomp EXE — Windows)
 
@@ -227,7 +242,7 @@ Details: `13-decisional-brain.md`.
 | `scripts/project-state-template.md` | Template for `N64_PROJECT_STATE.md` |
 | `examples/recomp-toml-skeleton.toml` | Minimal TOML shape |
 | `examples/splat-bss-subsegment.yaml` | BSS yaml pattern |
-| `examples/mcp-servers.template.json` | Ghidra + RMG MCP server template |
+| `examples/mcp-servers.template.json` | Ghidra + Mupen64MCP + RMG MCP server template |
 | `examples/cdb-trace-evidence-template.txt` | CDB `.cdb.txt` triage summary shape |
 
 ---

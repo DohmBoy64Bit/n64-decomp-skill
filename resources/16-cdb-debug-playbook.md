@@ -6,7 +6,7 @@ Use when static evidence (GhidraMCP, splat, logs) is not enough to prove **host-
 
 **Not** a substitute for:
 - **Ghidra + N64LoaderWV** — guest ROM/static boundaries (`04-ghidra-mcp.md`)
-- **RMG MCP** — live **guest** RDRAM/registers in emulation (`14-rmg-mcp-playbook.md`)
+- **Mupen64MCP / RMG MCP** — live **guest** RDRAM/registers in emulation (`17-mupen64mcp-playbook.md`, `14-rmg-mcp-playbook.md`)
 
 **MCP:** CDB is driven via **PowerShell wrapper scripts** in the user's project (typical `tools/run_*_cdb.ps1`), not via MCP. The agent runs or extends those scripts; it does not invent CDB command lines without reading an existing wrapper.
 
@@ -18,7 +18,7 @@ Use when static evidence (GhidraMCP, splat, logs) is not enough to prove **host-
 |--------|-----------------|
 | Crash in native recomp `.exe` with host stack (MSVC, `std::`, SEH) | Yes |
 | Need proof a **host** function was hit or **bypassed** after codegen | Yes |
-| Overlay `jalr` wrong at **guest** PC only | Try RMG or Ghidra first; CDB if debugging translated lookup in host code |
+| Overlay `jalr` wrong at **guest** PC only | Try Mupen64MCP/RMG or Ghidra first; CDB if debugging translated lookup in host code |
 | Matching decomp asm-only phase | No — use matching build + Ghidra |
 | Splat yaml / BSS wrong | No — fix yaml |
 
@@ -153,10 +153,10 @@ If the project maintains two wrappers (e.g. retail vs experimental layer):
 1. Build/log output + yaml/TOML
 2. GhidraMCP static (boundaries, overlay tables)
 3. CDB on native EXE (this file) — host runtime proof
-4. RMG MCP (optional) — guest live state
+4. Mupen64MCP or RMG MCP (optional) — guest live state
 ```
 
-Load `14-rmg-mcp-playbook.md` when the question is **guest** PC in RDRAM, not host virtual address.
+Load `17-mupen64mcp-playbook.md` or `14-rmg-mcp-playbook.md` when the question is **guest** PC in RDRAM, not host virtual address.
 
 ---
 

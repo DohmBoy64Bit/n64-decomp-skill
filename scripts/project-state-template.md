@@ -44,6 +44,7 @@
 - **N64Recomp build**: 
 - **GhidraMCP**: bridge path / HTTP port / MCP server id `ghidra` / correct MIPS N64 program?
 - **MCP host**: Cursor|Claude|VS Code|Codex|… / config file path (`15-mcp-client-setup.md`)
+- **Mupen64MCP (optional)**: clone path / `n64-debug-daemon.exe` / core DLL / MCP id `n64-debug-mcp` / `n64_status` / ROM loaded?
 - **RMG MCP (optional)**: `server.py` path / host:port / bridge_status / ROM loaded / symbols `.map`?
 
 ## Active Commands

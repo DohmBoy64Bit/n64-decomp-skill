@@ -135,6 +135,7 @@ Ghidra version and install path
 N64LoaderWV extension version (https://github.com/zeroKilo/N64LoaderWV)
 GhidraMCP repository path and plugin version/commit
 MCP host and config path (15-mcp-client-setup.md)
+Mupen64MCP path (optional, 17-mupen64mcp-playbook.md)
 RMG MCP path (optional, 14-rmg-mcp-playbook.md)
 N64Recomp/N64ModernRuntime/RT64 commits
 Python environment command

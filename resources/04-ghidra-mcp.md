@@ -2,7 +2,7 @@
 
 Read this when function boundaries, XREFs, hardware accesses, overlays, or jump targets need Ghidra evidence, or when setting up bethington/ghidra-mcp.
 
-**MCP client wiring (Cursor, Claude, Codex, VS Code, any host):** `15-mcp-client-setup.md` — client-agnostic autoconfig for `ghidra` + optional `rmg-n64-debugger`.
+**MCP client wiring (Cursor, Claude, Codex, VS Code, any host):** `15-mcp-client-setup.md` — client-agnostic autoconfig for `ghidra` + optional `n64-debug-mcp` / `rmg-n64-debugger`.
 
 Preferred GhidraMCP implementation: https://github.com/bethington/ghidra-mcp
 
@@ -42,7 +42,7 @@ Record Ghidra version, N64LoaderWV version, and program name in `N64_PROJECT_STA
 
 ## Static Analysis Workflow — baserom, Overlays, Pre-Recomp Boundaries
 
-Primary **static** tool before N64Recomp metadata and before promoting symbols. Complements CDB host traces (`16-cdb-debug-playbook.md`) and optional RMG guest debug (`14-rmg-mcp-playbook.md`).
+Primary **static** tool before N64Recomp metadata and before promoting symbols. Complements CDB host traces (`16-cdb-debug-playbook.md`) and optional guest runtime MCP (`17-mupen64mcp-playbook.md`, `14-rmg-mcp-playbook.md`).
 
 ### 1. Import and segment sanity
 
@@ -95,7 +95,8 @@ Ghidra (static)     → boundaries, overlay tables, jump tables, MMIO sites
 splat yaml          → segments, bss, symbol_addrs promotion
 N64Recomp TOML      → codegen input
 CDB (16)            → prove host recomp EXE hits/bypasses translated paths
-RMG MCP (14)        → optional guest RDRAM proof
+Mupen64MCP (17)     → optional guest breakpoints / RDRAM proof
+RMG MCP (14)        → optional guest RDRAM proof (alternative)
 ```
 
 ### 5. Ghidra session checklist (pre-MCP)
@@ -197,7 +198,7 @@ If health checks fail, fix plugin/server/bridge/client before broad analysis.
 
 **Canonical guide:** `15-mcp-client-setup.md` — discover host (Cursor, Claude Desktop, VS Code, Codex, OpenCode, …), set absolute `GHIDRA_MCP_BRIDGE` path, server id `ghidra`, verify with `check_connection`.
 
-**Template:** `examples/mcp-servers.template.json` (ghidra + optional rmg-n64-debugger).
+**Template:** `examples/mcp-servers.template.json` (ghidra + optional guest runtime MCP).
 
 Quick stdio shape (paths must be absolute on the user's machine):
 

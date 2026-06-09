@@ -6,6 +6,15 @@
       "args": ["<GHIDRA_MCP_BRIDGE>"],
       "env": {}
     },
+    "n64-debug-mcp": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "<MUPEN64MCP_PYTHON_DIR>",
+        "run",
+        "n64-debug-mcp"
+      ]
+    },
     "rmg-n64-debugger": {
       "command": "python",
       "args": ["<RMG_MCP_SERVER>"],
@@ -18,6 +27,10 @@
   },
   "_paths": {
     "GHIDRA_MCP_BRIDGE": "C:/tools/ghidra-mcp/bridge_mcp_ghidra.py",
+    "MUPEN64MCP_ROOT": "C:/tools/Mupen64MCP",
+    "MUPEN64MCP_PYTHON_DIR": "C:/tools/Mupen64MCP/mcp/python",
+    "MUPEN64MCP_DAEMON": "C:/tools/Mupen64MCP/native/n64_debug_daemon/build/n64-debug-daemon.exe",
+    "MUPEN64MCP_CORE_DLL": "C:/tools/Mupen64MCP/build/mupen64plus/lib/mupen64plus.dll",
     "RMG_MCP_SERVER": "C:/tools/RMG/server.py",
     "GHIDRA_MCP_HTTP_URL_optional": "http://127.0.0.1:8081/mcp"
   },
@@ -30,11 +43,18 @@
       "Tools → GhidraMCP → Start MCP Server",
       "curl http://127.0.0.1:8089/check_connection"
     ],
+    "n64-debug-mcp": [
+      "git clone https://github.com/DohmBoy64Bit/Mupen64MCP",
+      "MSYS2 MINGW64 build: mupen64plus.dll + n64-debug-daemon.exe — resources/17-mupen64mcp-playbook.md",
+      "cd mcp/python && uv sync",
+      "n64_status succeeds (daemon on port 9876)"
+    ],
     "rmg-n64-debugger": [
       "thebardockgames/RMG built with -DMCP_BRIDGE=ON",
       "pip install mcp websockets",
       "RMG.exe running with user ROM loaded",
       "bridge_status succeeds"
     ]
-  }
+  },
+  "_note": "Include ghidra + at most one guest runtime (n64-debug-mcp OR rmg-n64-debugger)."
 }

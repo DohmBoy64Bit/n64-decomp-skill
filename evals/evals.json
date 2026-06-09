@@ -149,14 +149,15 @@
       "id": 9,
       "eval_name": "mcp-full-setup",
       "track": "both",
-      "prompt": "I'm setting up Ghidra for my N64 decomp. I use Cursor and may add RMG MCP later. Walk me through N64LoaderWV, GhidraMCP, and client-agnostic MCP wiring for both the ghidra and rmg-n64-debugger servers.",
-      "expected_output": "N64LoaderWV ROM load first, GhidraMCP plugin/bridge, 15-mcp-client-setup autoconfig, mcp-servers template, optional RMG fork.",
+      "prompt": "I'm setting up Ghidra for my N64 decomp. I use Cursor and want to clone/build Mupen64MCP for guest runtime debug (RMG is optional later). Walk me through N64LoaderWV, GhidraMCP, Mupen64MCP build, and client-agnostic MCP wiring for ghidra and n64-debug-mcp servers.",
+      "expected_output": "N64LoaderWV ROM load first, GhidraMCP plugin/bridge, Mupen64MCP clone/build per 17-mupen64mcp-playbook, 15-mcp-client-setup autoconfig, mcp-servers template.",
       "files": [],
       "expectations": [
         "Mentions N64LoaderWV or zeroKilo for N64 ROM import in Ghidra",
         "Says load N64 ROM with N64LoaderWV before GhidraMCP evidence or MCP tools",
         "References 15-mcp-client-setup.md or 15-mcp-client-setup path",
-        "Mentions MCP server id ghidra and optional rmg-n64-debugger",
+        "Mentions MCP server id ghidra and optional n64-debug-mcp or Mupen64MCP",
+        "References 17-mupen64mcp-playbook.md or Mupen64MCP clone build steps",
         "Says discover MCP client host before writing config paths",
         "References examples/mcp-servers.template.json or mcp-servers template"
       ]
@@ -173,7 +174,7 @@
         "References 16-cdb-debug-playbook.md or 16-cdb-debug-playbook path",
         "Says read or discover tools/*cdb*.ps1 wrapper scripts before changing breakpoints",
         "Mentions .cdb.txt trace logs for hit bypass or abort proof",
-        "Distinguishes CDB native host EXE debug from Ghidra guest static or RMG guest emulation",
+        "Distinguishes CDB native host EXE debug from Ghidra guest static or Mupen64MCP or RMG guest emulation",
         "Mentions Ghidra or static hypothesis before CDB runtime proof"
       ]
     },

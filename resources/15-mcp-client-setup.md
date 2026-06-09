@@ -1,8 +1,10 @@
-# MCP Client Setup — Ghidra + RMG (Client-Agnostic)
+# MCP Client Setup — Ghidra + Guest Runtime MCP (Client-Agnostic)
 
-Read this when wiring **GhidraMCP** (`04-ghidra-mcp.md`) and/or **RMG MCP** (`14-rmg-mcp-playbook.md`) into any MCP host: Cursor, Claude Desktop, VS Code, Codex, OpenCode, Windsurf, or other stdio/HTTP MCP clients.
+Read this when wiring **GhidraMCP** (`04-ghidra-mcp.md`) and/or optional **guest runtime** MCP into any MCP host: Cursor, Claude Desktop, VS Code, Codex, OpenCode, Windsurf, or other stdio/HTTP MCP clients.
 
-**Goal:** one mental model — discover the client, set absolute paths once, use the same two server names everywhere.
+**Guest runtime (pick one if any):** [Mupen64MCP](https://github.com/DohmBoy64Bit/Mupen64MCP) (`17-mupen64mcp-playbook.md`, server id `n64-debug-mcp`) or [RMG MCP](https://github.com/thebardockgames/RMG) (`14-rmg-mcp-playbook.md`, server id `rmg-n64-debugger`).
+
+**Goal:** one mental model — discover the client, set absolute paths once, use the same server names everywhere.
 
 ---
 
@@ -11,7 +13,8 @@ Read this when wiring **GhidraMCP** (`04-ghidra-mcp.md`) and/or **RMG MCP** (`14
 | MCP server id | Stack | Required? |
 |---------------|-------|-----------|
 | `ghidra` | bethington/ghidra-mcp bridge → Ghidra HTTP plugin | Recommended for static analysis |
-| `rmg-n64-debugger` | thebardockgames/RMG `server.py` → WebSocket bridge | Optional runtime debug only |
+| `n64-debug-mcp` | [DohmBoy64Bit/Mupen64MCP](https://github.com/DohmBoy64Bit/Mupen64MCP) `n64-debug-mcp` → TCP daemon → Mupen64Plus | Optional guest runtime (preferred when user has this build) |
+| `rmg-n64-debugger` | thebardockgames/RMG `server.py` → WebSocket bridge | Optional guest runtime (alternative to Mupen64MCP) |
 
 Do not rename these in docs unless the user's client forbids a name — then document the alias in `N64_PROJECT_STATE.md`.
 
@@ -105,17 +108,33 @@ Full build/deploy: `04-ghidra-mcp.md`. Short sequence:
 
 ---
 
-## Phase 2 — RMG stack (optional runtime)
+## Phase 2 — Mupen64MCP stack (optional guest runtime)
 
-Only when static path stalls or user needs live RDRAM/registers/traces. Full build: `14-rmg-mcp-playbook.md`.
+Only when static path stalls or user needs live guest RDRAM/registers/breakpoints. Full clone + build: `17-mupen64mcp-playbook.md`.
+
+```text
+1. git clone https://github.com/DohmBoy64Bit/Mupen64MCP.git
+2. MSYS2 MINGW64: build mupen64plus.dll (DEBUGGER, NO_ASM=1) → n64-debug-daemon.exe → optional input-inject DLL
+3. cd mcp/python && uv sync  (or pip install -e .)
+4. Wire MCP client server id n64-debug-mcp — §4.4
+5. n64_start_daemon (tool) or manual daemon on port 9876 → n64_status succeeds
+```
+
+---
+
+## Phase 2b — RMG stack (optional guest runtime — alternative)
+
+Only if the user has RMG built instead of (or in addition to) Mupen64MCP. Full build: `14-rmg-mcp-playbook.md`.
 
 ```text
 1. Build RMG fork with -DMCP_BRIDGE=ON (Windows MSYS2 ucrt64 per fork README)
 2. pip install mcp websockets
 3. Launch RMG.exe → load user's ROM (lawful copy only)
-4. python server.py  (or let MCP client spawn it — §3)
+4. python server.py  (or let MCP client spawn it — §4.3)
 5. MCP tool bridge_status → connected
 ```
+
+Do not require both Phase 2 and Phase 2b — one guest runtime MCP is enough.
 
 ---
 
@@ -133,8 +152,13 @@ Set **absolute paths** once; reuse in every host's config. Suggested env vars (u
 | `RMG_MCP_HOST` | `127.0.0.1` | WebSocket target (RMG GUI) |
 | `RMG_MCP_PORT` | `8765` | WebSocket port |
 | `RMG_MCP_TIMEOUT_SECONDS` | `5.0` | Bridge timeout |
+| `MUPEN64MCP_ROOT` | `C:/tools/Mupen64MCP` | Clone root |
+| `MUPEN64MCP_PYTHON_DIR` | `C:/tools/Mupen64MCP/mcp/python` | `uv --directory` target for `n64-debug-mcp` |
+| `MUPEN64MCP_DAEMON` | `C:/tools/Mupen64MCP/native/n64_debug_daemon/build/n64-debug-daemon.exe` | Manual daemon launch |
+| `MUPEN64MCP_CORE_DLL` | `C:/tools/Mupen64MCP/build/mupen64plus/lib/mupen64plus.dll` | Core with DEBUGGER |
+| `N64_DAEMON_PORT` | `9876` | TCP port (Mupen64MCP default) |
 
-**Python launcher:** prefer `python` on PATH, or `uv run --script` if the user standardizes on uv — match what works in a bare terminal first.
+**Python launcher:** prefer `python` on PATH, or `uv run` / `uv --directory` if the user standardizes on uv — match what works in a bare terminal first.
 
 ---
 
@@ -203,7 +227,41 @@ Ghidra plugin HTTP (`8089`) and MCP HTTP (`8081`) are **different** layers — b
 
 RMG GUI must stay open with ROM loaded while tools run.
 
-### 4.4 Both servers (combined JSON fragment)
+### 4.4 Mupen64MCP — stdio (uv)
+
+```json
+{
+  "mcpServers": {
+    "n64-debug-mcp": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "<MUPEN64MCP_PYTHON_DIR>",
+        "run",
+        "n64-debug-mcp"
+      ]
+    }
+  }
+}
+```
+
+Daemon may be started via `n64_start_daemon` MCP tool or manually (`17-mupen64mcp-playbook.md`). ROM path stays in user workspace — do not commit ROM paths to shared MCP config.
+
+**pip variant (no uv):**
+
+```json
+"n64-debug-mcp": {
+  "command": "python",
+  "args": ["-m", "n64_debug_mcp.server"],
+  "env": {
+    "PYTHONPATH": "<MUPEN64MCP_PYTHON_DIR>"
+  }
+}
+```
+
+Verify module name against upstream `pyproject.toml` if the entry point changes.
+
+### 4.5 All servers (combined JSON fragment)
 
 ```json
 {
@@ -211,6 +269,15 @@ RMG GUI must stay open with ROM loaded while tools run.
     "ghidra": {
       "command": "python",
       "args": ["C:/tools/ghidra-mcp/bridge_mcp_ghidra.py"]
+    },
+    "n64-debug-mcp": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "C:/tools/Mupen64MCP/mcp/python",
+        "run",
+        "n64-debug-mcp"
+      ]
     },
     "rmg-n64-debugger": {
       "command": "python",
@@ -225,6 +292,8 @@ RMG GUI must stay open with ROM loaded while tools run.
 }
 ```
 
+Include only servers the user has built. Typical: **ghidra** + one guest runtime (`n64-debug-mcp` *or* `rmg-n64-debugger`).
+
 Copy `examples/mcp-servers.template.json` and fill paths — do not commit secrets or ROM paths.
 
 ---
@@ -233,7 +302,7 @@ Copy `examples/mcp-servers.template.json` and fill paths — do not commit secre
 
 ### Cursor / Claude Desktop / VS Code (JSON)
 
-Merge §4.4 into the host's `mcpServers` object. Restart the host or reload MCP after save.
+Merge §4.5 into the host's `mcpServers` object (subset OK). Restart the host or reload MCP after save.
 
 ### Codex (TOML)
 
@@ -250,6 +319,10 @@ args = ["C:/tools/RMG/server.py"]
 RMG_MCP_HOST = "127.0.0.1"
 RMG_MCP_PORT = "8765"
 RMG_MCP_TIMEOUT_SECONDS = "5.0"
+
+[mcp_servers.n64-debug-mcp]
+command = "uv"
+args = ["--directory", "C:/tools/Mupen64MCP/mcp/python", "run", "n64-debug-mcp"]
 ```
 
 ### HTTP-only clients
@@ -272,6 +345,10 @@ curl http://127.0.0.1:8089/get_version
 
 From MCP client (after connect): `check_connection` / `instances_list` — confirm **MIPS N64** program name matches state file.
 
+### Mupen64MCP path
+
+From MCP client: `n64_status` — core connected, ROM loaded, PC/frame reported. If daemon not auto-started: verify `n64-debug-daemon.exe` on port 9876 (`17-mupen64mcp-playbook.md`).
+
 ### RMG path
 
 From MCP client: `bridge_status` — must report bridge ready with ROM loaded.
@@ -283,7 +360,8 @@ Update `N64_PROJECT_STATE.md`:
 ```text
 GhidraMCP: extension version / HTTP port / bridge path / MCP server id "ghidra"
 N64LoaderWV: version / program name / language
-RMG MCP: RMG build / server.py path / host:port / symbols map path
+Mupen64MCP: clone path / daemon+core DLL paths / MCP server id "n64-debug-mcp" / ROM loaded
+RMG MCP (if used): RMG build / server.py path / host:port / symbols map path
 MCP host: Cursor|Claude|… / config file path used
 ```
 
@@ -297,9 +375,11 @@ MCP host: Cursor|Claude|… / config file path used
 | Ghidra connects but wrong bytes at `0x80xxxxxx` | Non-N64 program loaded | Re-import with N64LoaderWV |
 | `check_connection` fails | Plugin not started | Tools → GhidraMCP → Start MCP Server |
 | Bridge starts, MCP empty | Wrong `bridge_mcp_ghidra.py` path | Absolute path in `args` |
+| `n64_status` fails | Daemon down or wrong `uv` path | Build per `17-mupen64mcp-playbook.md`; check port 9876 |
+| Mupen64MCP BP never hits | Dynarec enabled | Core must use interpreter (`R4300Emulator=0`, `NO_ASM=1` build) |
 | RMG `bridge_status` fails | GUI closed or no ROM | Open RMG, load ROM, check port |
-| stdio works in terminal, not in IDE | Different `python` on PATH | Use full path to `python.exe` in `command` |
-| Only one server needed | User doing splat-only | Install **ghidra** only; skip RMG |
+| stdio works in terminal, not in IDE | Different `python`/`uv` on PATH | Use full path in `command` |
+| Only one server needed | User doing splat-only | Install **ghidra** only; skip guest runtime MCP |
 
 ---
 
@@ -308,7 +388,8 @@ MCP host: Cursor|Claude|… / config file path used
 1. **Discover client** before emitting config — do not assume Cursor.
 2. **Use absolute paths** — never `~/` without resolving on the user's OS.
 3. **N64LoaderWV before GhidraMCP** — correct MIPS program is prerequisite.
-4. **Ghidra default, RMG optional** — do not require RMG for matching decomp or first recomp triage.
-5. **Record working config** in `N64_PROJECT_STATE.md` + optional `AGENTS.md` for the team.
+4. **Ghidra default, guest runtime optional** — do not require Mupen64MCP or RMG for matching decomp or first recomp triage.
+5. **One guest runtime** — prefer Mupen64MCP when the user has cloned/built it; otherwise RMG if available.
+6. **Record working config** in `N64_PROJECT_STATE.md` + optional `AGENTS.md` for the team.
 
-Evidence protocols remain in `04-ghidra-mcp.md` (static) and `14-rmg-mcp-playbook.md` (runtime).
+Evidence protocols: `04-ghidra-mcp.md` (static), `17-mupen64mcp-playbook.md` or `14-rmg-mcp-playbook.md` (guest runtime).

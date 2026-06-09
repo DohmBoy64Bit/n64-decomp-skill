@@ -9,7 +9,7 @@
 | First matching ROM, BSS, `configure.py` | `03-matching-build.md` |
 | Ghidra, N64LoaderWV, GhidraMCP, overlay tables, pre-recomp boundaries | `04-ghidra-mcp.md` |
 | CDB / PowerShell wrappers, `.cdb.txt` host traces (Track B) | `16-cdb-debug-playbook.md` |
-| MCP client autoconfig (Ghidra + RMG) | `15-mcp-client-setup.md` |
+| MCP client autoconfig (Ghidra + guest runtime) | `15-mcp-client-setup.md` |
 | Function inventory, jump tables, `symbol_addrs` | `05-function-discovery.md` |
 | libultra, n64sym, ultralib | `06-libultra.md` |
 | No libultra, direct MMIO | `07-custom-runtime.md` |
@@ -22,8 +22,9 @@
 | `configure_min.py` CLI | `scripts/configure_min.py` + `03-matching-build.md` |
 | IDO asm-processor integration | **`n64-decomp-ido`** skill (separate) |
 | Native EXE breakpoints, `.cdb.txt` hit/bypass proof | `16-cdb-debug-playbook.md` |
-| Live guest RDRAM/registers, trace A/B (optional) | `14-rmg-mcp-playbook.md` |
+| Mupen64MCP clone/build, guest breakpoints, OS detect (optional) | `17-mupen64mcp-playbook.md` |
+| RMG guest RDRAM/registers, trace A/B (optional) | `14-rmg-mcp-playbook.md` |
 
 **Rule:** If you are about to write a fix touching N64 hardware or generated output and have not loaded the row's file **this session** → stop and load it.
 
-**Optional:** Load `14-rmg-mcp-playbook.md` only when the user has RMG MCP or asks for runtime emulator evidence — never instead of GhidraMCP for static boundaries.
+**Optional:** Load `17-mupen64mcp-playbook.md` when the user has Mupen64MCP or asks to clone/build guest runtime MCP; load `14-rmg-mcp-playbook.md` only for RMG — never instead of GhidraMCP for static boundaries.

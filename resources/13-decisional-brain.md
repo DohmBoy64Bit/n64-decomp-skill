@@ -33,7 +33,7 @@ Keep fixes **phase-correct** — do not mix splat yaml, N64Recomp TOML, generate
 | 2 | GhidraMCP raw MIPS / xrefs / overlay tables (`04-ghidra-mcp.md`) |
 | 3 | `readelf -Ws`, splat yaml segment table, TOML overlay section |
 | 4 | CDB on native recomp EXE + `.cdb.txt` trace (`16-cdb-debug-playbook.md`) if user has wrappers |
-| 5 | Optional: RMG MCP live **guest** state (`14-rmg-mcp-playbook.md`) if user has bridge |
+| 5 | Optional: Mupen64MCP or RMG MCP live **guest** state (`17-mupen64mcp-playbook.md`, `14-rmg-mcp-playbook.md`) if user has a build |
 | 6 | Compare to Zelda64Recomp/Kirby64Recomp **structure** only |
 | 7 | Ask user for specific artifact; update `N64_PROJECT_STATE.md` |
 

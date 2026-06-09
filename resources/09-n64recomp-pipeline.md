@@ -225,4 +225,4 @@ For **native recomp `.exe`** crashes (MSVC stack, `std::thread` abort, host stub
 
 ## Optional: runtime emulator MCP
 
-If static triage stalls and the user has [thebardockgames/RMG](https://github.com/thebardockgames/RMG) with MCP bridge: see **`14-rmg-mcp-playbook.md`** for `bridge_status`, guest PC/register inspection, and trace compare. This does not replace overlay registration or TOML fixes. Prefer CDB when the bug is clearly **host-side** in the recomp binary.
+If static triage stalls and the user has guest runtime MCP: [DohmBoy64Bit/Mupen64MCP](https://github.com/DohmBoy64Bit/Mupen64MCP) (`17-mupen64mcp-playbook.md` — `n64_status`, breakpoints, PI DMA) or [thebardockgames/RMG](https://github.com/thebardockgames/RMG) (`14-rmg-mcp-playbook.md` — `bridge_status`, trace compare). This does not replace overlay registration or TOML fixes. Prefer CDB when the bug is clearly **host-side** in the recomp binary.
