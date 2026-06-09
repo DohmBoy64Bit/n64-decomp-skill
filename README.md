@@ -19,7 +19,7 @@ This skill is a **playbook** for the AI agent. It does **not** include game ROMs
 | Included | Not included |
 |----------|----------------|
 | `SKILL.md` — router, boot, prohibitions, state protocol | Your ROM or decomp tree |
-| `resources/` — phased playbooks (01–15, `db-n64-index.md`) | N64Recomp / Ghidra / RMG installs |
+| `resources/` — phased playbooks (01–16, `db-n64-index.md`) | N64Recomp / Ghidra / CDB / RMG installs |
 | `scripts/configure_min.py` — first asm match helper | Matching game `code/` |
 | `examples/` — TOML + BSS yaml templates | |
 
@@ -66,8 +66,9 @@ Reference recomp ports (**Zelda64Recomp**, **Kirby64Recomp**, **Dinosaur Planet 
 
 | Tool | Track | Resource |
 |------|-------|----------|
-| Ghidra + N64LoaderWV + GhidraMCP | A & B (static evidence) | `04-ghidra-mcp.md`, `15-mcp-client-setup.md` |
-| RMG MCP debug bridge | B (live guest state, when stuck) | `14-rmg-mcp-playbook.md` |
+| Ghidra + N64LoaderWV + GhidraMCP | A & B (static: baserom, overlays, boundaries) | `04-ghidra-mcp.md`, `15-mcp-client-setup.md` |
+| CDB + PowerShell wrappers | B (native `.exe`, `.cdb.txt` traces, Windows) | `16-cdb-debug-playbook.md` |
+| RMG MCP debug bridge | B (live **guest** RDRAM, when stuck) | `14-rmg-mcp-playbook.md` |
 
 ### Which track am I on?
 
@@ -88,7 +89,8 @@ The agent should report **track + phase + one next step** before wide refactors 
 - **Cursor** (or compatible agent) with skills support
 - **uv** + **splat64[mips]** for split workflows
 - **MIPS** assembler/linker for matching; **N64Recomp** + **N64ModernRuntime** for static ports
-- **Ghidra 11+** + [N64LoaderWV](https://github.com/zeroKilo/N64LoaderWV) (N64 ROM loader) + [bethington/ghidra-mcp](https://github.com/bethington/ghidra-mcp) for static MCP evidence (optional but recommended)
+- **Ghidra 12.x** (e.g. 12.0.4) + [N64LoaderWV](https://github.com/zeroKilo/N64LoaderWV) + [bethington/ghidra-mcp](https://github.com/bethington/ghidra-mcp) — static baserom analysis, overlay dispatch tables, pre-recomp boundaries (`04-ghidra-mcp.md`)
+- **CDB** (Windows SDK / Debugging Tools) + project `tools/*cdb*.ps1` wrappers — native recomp EXE breakpoints and `.cdb.txt` trace logs (`16-cdb-debug-playbook.md`)
 - **MCP client wiring:** `resources/15-mcp-client-setup.md` + `examples/mcp-servers.template.json` — client-agnostic `ghidra` + optional `rmg-n64-debugger` servers (Cursor, Claude, Codex, VS Code, …)
 - **Optional runtime MCP:** [thebardockgames/RMG](https://github.com/thebardockgames/RMG) MCP Debug Bridge — `resources/14-rmg-mcp-playbook.md`; not bundled or required
 - Pair **`n64-decomp-ido`** after IDO compiler identification
@@ -176,6 +178,15 @@ Read n64-decomp/SKILL.md and resources/13-decisional-brain.md.
 Classify track and phase, then answer in the mandatory debug format (Phase, Structural Cause, Evidence, Fix, Verification).
 ```
 
+### Host recomp debug with CDB (Track B, Windows)
+
+```
+Read resources/16-cdb-debug-playbook.md and resources/04-ghidra-mcp.md.
+Project root: [PATH]. List tools/*cdb*.ps1 wrappers and the last .cdb.txt trace if any.
+I need to prove whether [SYMBOL or PATH] is hit or bypassed in the native recomp EXE (or diagnose [e.g. std::thread abort]).
+Propose breakpoint changes only after reading the wrapper script. Archive trace evidence using examples/cdb-trace-evidence-template.txt.
+```
+
 > **Why this works:** The prompts force *read first, detect second, ask third, act last* — same pattern as [ps2-recomp-Agent-SKILL](https://github.com/hkmodd/ps2-recomp-Agent-SKILL). The agent cannot skip boot files, assume paths, or start wide yaml/TOML/runtime edits without your go-ahead.
 
 ---
@@ -221,12 +232,14 @@ n64-decomp/
 │   ├── 13-decisional-brain.md
 │   ├── 14-rmg-mcp-playbook.md   # Optional live emulator MCP
 │   ├── 15-mcp-client-setup.md   # Ghidra + RMG MCP autoconfig
+│   ├── 16-cdb-debug-playbook.md # CDB native EXE traces (Windows)
 │   └── db-n64-index.md      # Master router
 ├── scripts/
 │   ├── configure_min.py
 │   ├── project-state-template.md
 │   └── package_release.ps1  # Dev packaging (not in .skill)
 ├── examples/
+│   ├── cdb-trace-evidence-template.txt
 │   ├── mcp-servers.template.json
 │   ├── recomp-toml-skeleton.toml
 │   └── splat-bss-subsegment.yaml
@@ -237,7 +250,7 @@ n64-decomp/
 
 ## Development / evals
 
-Skill-creator evals under `evals/`; benchmark runs in `n64-decomp-workspace/` (gitignored). Latest (iteration 9, v1.2.0): with_skill **100%**, baseline **78.6%**, Δ **+21.4%** across 10 evals.
+Skill-creator evals under `evals/`; benchmark runs in `n64-decomp-workspace/` (gitignored). Latest (iteration 10, v1.3.0): with_skill **100%**, baseline **4.2%**, Δ **+95.8%** across 12 evals (incl. CDB + Ghidra overlay).
 
 ---
 
@@ -249,7 +262,7 @@ MIT — see [LICENSE](LICENSE). You must **own** any N64 software you analyze. N
 
 ## Links
 
-- **Releases:** https://github.com/DohmBoy64Bit/n64-decomp-skill/releases (current: **v1.2.2**)
+- **Releases:** https://github.com/DohmBoy64Bit/n64-decomp-skill/releases (current: **v1.3.0**)
 - [splat](https://github.com/ethteck/splat) · [N64Recomp](https://github.com/N64Recomp/N64Recomp) · [N64LoaderWV](https://github.com/zeroKilo/N64LoaderWV) · [GhidraMCP](https://github.com/bethington/ghidra-mcp) · [RMG MCP](https://github.com/thebardockgames/RMG)
 - Related: [pcrecomp-skill](https://github.com/DohmBoy64Bit/pcrecomp-skill), [xboxrecomp-skill](https://github.com/DohmBoy64Bit/xboxrecomp-skill)
 - Design inspiration: [ps2-recomp-Agent-SKILL](https://github.com/hkmodd/ps2-recomp-Agent-SKILL)

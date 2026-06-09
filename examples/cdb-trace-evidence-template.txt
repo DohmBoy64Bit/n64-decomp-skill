@@ -1,0 +1,12 @@
+# CDB trace evidence — paste into triage or N64_PROJECT_STATE.md
+# See resources/16-cdb-debug-playbook.md
+
+Trace log:
+Wrapper script:
+Target EXE + build/PDB id:
+Breakpoint(s) set:
+Result: HIT | BYPASS | ABORT (fault)
+Key stack (top 5 frames):
+Guest-related symbol (if any):
+Conclusion:
+Next CDB run (if any):

@@ -30,11 +30,12 @@ Keep fixes **phase-correct** — do not mix splat yaml, N64Recomp TOML, generate
 | Level | Action |
 |-------|--------|
 | 1 | User-provided log + skill resource for that phase |
-| 2 | GhidraMCP raw MIPS / xrefs (`04-ghidra-mcp.md`) |
+| 2 | GhidraMCP raw MIPS / xrefs / overlay tables (`04-ghidra-mcp.md`) |
 | 3 | `readelf -Ws`, splat yaml segment table, TOML overlay section |
-| 4 | Optional: RMG MCP live state (`14-rmg-mcp-playbook.md`) if user has bridge |
-| 5 | Compare to Zelda64Recomp/Kirby64Recomp **structure** only |
-| 6 | Ask user for specific artifact; update `N64_PROJECT_STATE.md` |
+| 4 | CDB on native recomp EXE + `.cdb.txt` trace (`16-cdb-debug-playbook.md`) if user has wrappers |
+| 5 | Optional: RMG MCP live **guest** state (`14-rmg-mcp-playbook.md`) if user has bridge |
+| 6 | Compare to Zelda64Recomp/Kirby64Recomp **structure** only |
+| 7 | Ask user for specific artifact; update `N64_PROJECT_STATE.md` |
 
 ## Anti-Patterns
 
@@ -64,6 +65,8 @@ Ask for (not ROM files):
 - `readelf -Ws` for failing function/entrypoint
 - crash log with guest PC/LR/registers
 - context around failing `jal`, `jalr`, DMA, overlay load, RCP wait
+- CDB `.cdb.txt` trace log path, wrapper script used, breakpoint hit/bypass result
+- Ghidra export or GhidraMCP evidence for overlay dispatch table / boundary in question
 
 ## Recomp Templates (Structure Only)
 

@@ -1,9 +1,9 @@
 ---
 name: n64-decomp
 description: |
-  Nintendo 64 matching decompilation and N64Recomp static PC ports. Use for splat, uv, baserom, matching ROM, configure_min, BSS yaml, libultra, ultralib, m2c, decomp.me, custom runtime, MMIO, N64Recomp, overlays, jalr crashes, GhidraMCP, N64LoaderWV, MCP client setup, RMG MCP, symbol_addrs, VRAM/RDRAM, RSP/RDP, function boundaries, N64_PROJECT_STATE, or Zelda64Recomp ports - including "split my ROM", "fix splat yaml", or "wire ghidra mcp". Covers matching builds, Ghidra/N64LoaderWV evidence, MCP autoconfig, phase triage, project state. Not Xbox/PC x86 recomp, SNES/GameCube emu-only, or generic MIPS without N64 ROM context.
+  Nintendo 64 matching decompilation and N64Recomp static PC ports. Use for splat, uv, baserom, matching ROM, configure_min, BSS yaml, libultra, ultralib, m2c, decomp.me, custom runtime, MMIO, N64Recomp, overlays, jalr crashes, GhidraMCP, N64LoaderWV, overlay dispatch tables, CDB cdb.exe trace logs, PowerShell cdb wrappers, MCP client setup, RMG MCP, symbol_addrs, VRAM/RDRAM, RSP/RDP, function boundaries, N64_PROJECT_STATE, or Zelda64Recomp ports - including "split my ROM", "fix splat yaml", "wire ghidra mcp", or "debug recomp exe with cdb". Covers matching builds, Ghidra static analysis, host CDB dynamic traces, MCP autoconfig, phase triage, project state. Not Xbox/PC x86 recomp, SNES/GameCube emu-only, or generic MIPS without N64 ROM context.
 metadata:
-  mcpmarket-version: 1.2.0
+  mcpmarket-version: 1.3.0
 ---
 # N64 Decomp — Behavioral Constraint System
 
@@ -23,7 +23,8 @@ Load resource files **on demand** — not all at once. Full index: `resources/db
 | **uv, tools, clones** | `01-environment-setup.md` | Environment checklist |
 | **Splat / yaml / split** | `02-splat-setup.md` | Day-one splat workflow |
 | **First matching ROM, BSS** | `03-matching-build.md` | `configure_min`, linker, yaml BSS |
-| **Ghidra / N64LoaderWV / GhidraMCP** | `04-ghidra-mcp.md` | ROM loader + MCP evidence protocol |
+| **Ghidra / N64LoaderWV / GhidraMCP** | `04-ghidra-mcp.md` | Static baserom, overlays, boundaries |
+| **CDB / host EXE trace (Windows)** | `16-cdb-debug-playbook.md` | `.cdb.txt` hit/bypass, native recomp crashes |
 | **MCP client wiring (any host)** | `15-mcp-client-setup.md` | Autoconfig `ghidra` + `rmg-n64-debugger` servers |
 | **Function ledger, jump tables** | `05-function-discovery.md` | Before `symbol_addrs` / recomp metadata |
 | **libultra block** | `06-libultra.md` | n64sym hints, ultralib match |
@@ -185,6 +186,16 @@ capture_instruction_trace / compare_trace_files
 
 Default WebSocket: `127.0.0.1:8765`. Playbook: `14-rmg-mcp-playbook.md`. Client wiring: `15-mcp-client-setup.md`. **Not required** for matching decomp or initial recomp triage.
 
+### §7.6 CDB (native recomp EXE — Windows)
+
+When the user has **PowerShell CDB wrappers** (`tools/*cdb*.ps1`) and `.cdb.txt` trace logs:
+
+1. Read wrapper script — do not invent `cdb.exe` command lines.
+2. Static target from Ghidra/TOML first; CDB proves hit/bypass/abort on **host** build.
+3. Archive trace path + conclusion in `N64_PROJECT_STATE.md`.
+
+Playbook: `16-cdb-debug-playbook.md`. Template: `examples/cdb-trace-evidence-template.txt`.
+
 ---
 
 ## §8 DEBUG FORMAT
@@ -217,6 +228,7 @@ Details: `13-decisional-brain.md`.
 | `examples/recomp-toml-skeleton.toml` | Minimal TOML shape |
 | `examples/splat-bss-subsegment.yaml` | BSS yaml pattern |
 | `examples/mcp-servers.template.json` | Ghidra + RMG MCP server template |
+| `examples/cdb-trace-evidence-template.txt` | CDB `.cdb.txt` triage summary shape |
 
 ---
 

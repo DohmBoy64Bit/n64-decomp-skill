@@ -4,6 +4,8 @@
 
 **Not required** for matching decomp, splat setup, or first N64Recomp bring-up. Prefer `04-ghidra-mcp.md` (with [N64LoaderWV](https://github.com/zeroKilo/N64LoaderWV) ROM load) and build/log evidence first.
 
+**Host native EXE on Windows:** If the project uses **CDB** + PowerShell wrappers (`tools/*cdb*.ps1`) and `.cdb.txt` traces, use `16-cdb-debug-playbook.md` for breakpoints and hit/bypass proof on the **recompiled executable** — RMG MCP answers **guest** RDRAM in emulation, not MSVC host stacks.
+
 **MCP client wiring:** `15-mcp-client-setup.md` — same autoconfig doc as Ghidra; server id `rmg-n64-debugger`.
 
 Upstream fork: [thebardockgames/RMG](https://github.com/thebardockgames/RMG) (Mupen64Plus-based **RMG** + Qt6 WebSocket bridge + Python MCP `server.py`). Based on [Rosalie241/RMG](https://github.com/Rosalie241/RMG).
@@ -164,7 +166,8 @@ Use for **evidence**, not as a substitute for fixing yaml/TOML/runtime layers (`
 
 | Resource | Role |
 |----------|------|
-| `04-ghidra-mcp.md` | Static boundaries, xrefs, jump tables — **default** |
+| `04-ghidra-mcp.md` | Static boundaries, xrefs, jump tables, overlay tables — **default** |
+| `16-cdb-debug-playbook.md` | Native recomp `.exe`, CDB, `.cdb.txt` hit/bypass (Windows) |
 | `09-n64recomp-pipeline.md` | Overlay/runtime fixes before emulator patching |
 | `12-n64-hardware-subsystems.md` | Address spaces (RDRAM vs VRAM vs host) |
 | `14-rmg-mcp-playbook.md` | **Optional** live CPU/RDRAM when static path stalls |

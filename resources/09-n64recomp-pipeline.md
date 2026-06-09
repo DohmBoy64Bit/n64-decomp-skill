@@ -214,9 +214,15 @@ Prefer N64Recomp patch/single-file-output over editing generated output. Link pa
 - `readelf -Ws` for failing function/entrypoint
 - crash log with guest PC/LR/registers
 - function around failing `jal`, `jalr`, DMA, overlay load, RCP wait
+- CDB `.cdb.txt` trace log + wrapper script path (host EXE — `16-cdb-debug-playbook.md`)
+- GhidraMCP evidence for overlay dispatch / function boundary (`04-ghidra-mcp.md`)
 
 Do not ask for ROM files or copyrighted assets.
 
+## Host runtime debug (CDB — Windows)
+
+For **native recomp `.exe`** crashes (MSVC stack, `std::thread` abort, host stubs): static Ghidra first, then CDB via project PowerShell wrappers (`tools/*cdb*.ps1`). Archive `.cdb.txt` traces to prove hit/bypass. See **`16-cdb-debug-playbook.md`**.
+
 ## Optional: runtime emulator MCP
 
-If static triage stalls and the user has [thebardockgames/RMG](https://github.com/thebardockgames/RMG) with MCP bridge: see **`14-rmg-mcp-playbook.md`** for `bridge_status`, guest PC/register inspection, and trace compare. This does not replace overlay registration or TOML fixes.
+If static triage stalls and the user has [thebardockgames/RMG](https://github.com/thebardockgames/RMG) with MCP bridge: see **`14-rmg-mcp-playbook.md`** for `bridge_status`, guest PC/register inspection, and trace compare. This does not replace overlay registration or TOML fixes. Prefer CDB when the bug is clearly **host-side** in the recomp binary.

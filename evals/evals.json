@@ -160,6 +160,38 @@
         "Says discover MCP client host before writing config paths",
         "References examples/mcp-servers.template.json or mcp-servers template"
       ]
+    },
+    {
+      "id": 10,
+      "eval_name": "cdb-host-trace",
+      "track": "B",
+      "prompt": "My N64Recomp PC port EXE aborts with std::thread::~thread during teardown. The project has PowerShell CDB wrappers under tools/ (e.g. run_b9_retail_cdb.ps1) and we save .cdb.txt trace logs. How should I debug this before patching RecompiledFuncs/?",
+      "expected_output": "16-cdb-debug-playbook: read wrapper first, Ghidra static hypothesis, CDB breakpoints, .cdb.txt hit/bypass/abort evidence, fix runtime layer not generated C.",
+      "files": [],
+      "expectations": [
+        "Says not to hand-edit RecompiledFuncs as the primary fix",
+        "References 16-cdb-debug-playbook.md or 16-cdb-debug-playbook path",
+        "Says read or discover tools/*cdb*.ps1 wrapper scripts before changing breakpoints",
+        "Mentions .cdb.txt trace logs for hit bypass or abort proof",
+        "Distinguishes CDB native host EXE debug from Ghidra guest static or RMG guest emulation",
+        "Mentions Ghidra or static hypothesis before CDB runtime proof"
+      ]
+    },
+    {
+      "id": 11,
+      "eval_name": "ghidra-overlay-dispatch",
+      "track": "B",
+      "prompt": "I'm mapping overlay dispatch tables in baserom.z64 with Ghidra 12.0.4 and N64LoaderWV before N64Recomp codegen. How do I cross-reference the table, DMA load routines, and jalr sites without promoting tentative boundaries to symbol_addrs?",
+      "expected_output": "04-ghidra-mcp static workflow: N64LoaderWV import, segment vs splat yaml, overlay table xrefs, function_ledger, confidence gate.",
+      "files": [],
+      "expectations": [
+        "Mentions N64LoaderWV for baserom.z64 import",
+        "References 04-ghidra-mcp.md or 04-ghidra-mcp path",
+        "Mentions overlay dispatch table or overlay table xrefs",
+        "Says compare Ghidra segments to splat yaml VRAM or ROM ranges",
+        "Mentions function_ledger or tentative vs known confidence before symbol_addrs",
+        "Mentions jalr or indirect call sites tied to overlay loading"
+      ]
     }
   ]
 }

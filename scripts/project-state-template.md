@@ -31,7 +31,9 @@
 - **baserom path** (not committed):
 - **splat yaml**:
 - **N64Recomp TOML** (if recomp):
-- **Ghidra program** (name + arch + N64LoaderWV version):
+- **Ghidra program** (version e.g. 12.0.4 + name + arch + N64LoaderWV version):
+- **CDB wrappers** (paths under `tools/*cdb*.ps1`, if any):
+- **Last CDB trace** (`.cdb.txt` path + HIT/BYPASS/ABORT):
 
 ## Current Phase
 `PHASE_SETUP` — see `11-operational-phases.md`
