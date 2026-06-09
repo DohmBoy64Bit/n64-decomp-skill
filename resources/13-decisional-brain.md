@@ -21,7 +21,7 @@ Keep fixes **phase-correct** — do not mix splat yaml, N64Recomp TOML, generate
 
 1. **Classify phase** — matching vs recomp; which operational phase (`11-operational-phases.md`)
 2. **Classify subsystem** — CPU, PI DMA, overlay, RSP, save, etc. (`12-n64-hardware-subsystems.md`)
-3. **Gather narrow evidence** — one GhidraMCP call, one `readelf` row, one log line — not broad decompile
+3. **Gather narrow evidence** — one GhidraMCP call (static), and if the bug is guest-side and MCP is connected, one Mupen64MCP/RMG call (e.g. `n64_read_memory`, breakpoint hit, `n64_detect_os`); plus one `readelf` row or log line — not broad decompile
 4. **Hypothesis at correct layer** — yaml before asm; TOML/runtime before `RecompiledFuncs/`
 5. **Verify with a command** — rebuild, re-split, re-run N64Recomp, or targeted runtime log
 
@@ -30,12 +30,14 @@ Keep fixes **phase-correct** — do not mix splat yaml, N64Recomp TOML, generate
 | Level | Action |
 |-------|--------|
 | 1 | User-provided log + skill resource for that phase |
-| 2 | GhidraMCP raw MIPS / xrefs / overlay tables (`04-ghidra-mcp.md`) |
+| 2 | GhidraMCP raw MIPS / xrefs / overlay tables (`04-ghidra-mcp.md`) — **default static analysis** |
 | 3 | `readelf -Ws`, splat yaml segment table, TOML overlay section |
-| 4 | CDB on native recomp EXE + `.cdb.txt` trace (`16-cdb-debug-playbook.md`) if user has wrappers |
-| 5 | Optional: Mupen64MCP or RMG MCP live **guest** state (`17-mupen64mcp-playbook.md`, `14-rmg-mcp-playbook.md`) if user has a build |
+| 4 | **Guest runtime proof** (if connected): Mupen64MCP (`17-mupen64mcp-playbook.md`) or RMG (`14-rmg-mcp-playbook.md`) — breakpoint/RDRAM/PI DMA to confirm Ghidra hypothesis |
+| 5 | CDB on native recomp EXE + `.cdb.txt` trace (`16-cdb-debug-playbook.md`) when failure is **host-side** |
 | 6 | Compare to Zelda64Recomp/Kirby64Recomp **structure** only |
 | 7 | Ask user for specific artifact; update `N64_PROJECT_STATE.md` |
+
+**Initial analysis / fresh ROM:** Phase 0 hash + header (`12-n64-hardware-subsystems.md`), then Ghidra static recon; optional `n64_detect_os` or boot breakpoint via Mupen64MCP when built — enriches OS/boot classification, does not replace splat or ledger discipline.
 
 ## Anti-Patterns
 
@@ -67,6 +69,7 @@ Ask for (not ROM files):
 - context around failing `jal`, `jalr`, DMA, overlay load, RCP wait
 - CDB `.cdb.txt` trace log path, wrapper script used, breakpoint hit/bypass result
 - Ghidra export or GhidraMCP evidence for overlay dispatch table / boundary in question
+- Mupen64MCP/RMG: guest PC at crash, `n64_read_memory` snippet, breakpoint hit log, or `n64_detect_os` output (if runtime MCP connected)
 
 ## Recomp Templates (Structure Only)
 

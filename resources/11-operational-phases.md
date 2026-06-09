@@ -6,10 +6,10 @@ Use at **session start** and when the user asks "what's next?"
 
 | Phase | Goal | Load | Exit criteria |
 |-------|------|------|---------------|
-| **0 — ROM recon** | Hash, byte order, entrypoint, save/RDRAM hints | `12-n64-hardware-subsystems.md` § Phase 0 | Recorded in `N64_PROJECT_STATE.md` |
+| **0 — ROM recon** | Hash, byte order, entrypoint, save/RDRAM hints; optional Ghidra static + Mupen64MCP `n64_detect_os` / boot trace if MCP built | `12-n64-hardware-subsystems.md` § Phase 0, `04-ghidra-mcp.md`, optional `17-mupen64mcp-playbook.md` | Recorded in `N64_PROJECT_STATE.md` |
 | **1 — Splat** | uv, `create_config`, split, gitignore | `02-splat-setup.md` | `asm/` exists; no `hardware_regs`/`libultra_symbols` day one |
 | **2 — First asm match** | Byte-identical ROM from asm only | `03-matching-build.md`, `scripts/configure_min.py` | `configure.py --diff` clean; BSS in yaml not asm |
-| **3 — Discovery** | Function ledger, boundaries, confidence | `05-function-discovery.md`, `04-ghidra-mcp.md` | `docs/function_ledger.md` before bulk `symbol_addrs` |
+| **3 — Discovery** | Function ledger, boundaries, confidence; Ghidra static + optional guest MCP to confirm `jalr`/overlay targets | `05-function-discovery.md`, `04-ghidra-mcp.md`, optional `17-mupen64mcp-playbook.md` | `docs/function_ledger.md` before bulk `symbol_addrs` |
 | **4 — Runtime block** | libultra **or** custom MMIO path | `06-libultra.md` **or** `07-custom-runtime.md` | Boundaries + symbols for OS layer |
 | **5 — Compiler + C** | IDO/GCC match, m2c/decomp.me | `08-compiler-and-c.md`, `n64-decomp-ido` skill | Per-file or per-module match |
 

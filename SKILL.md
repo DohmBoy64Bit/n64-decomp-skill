@@ -3,7 +3,7 @@ name: n64-decomp
 description: |
   Nintendo 64 matching decompilation and N64Recomp static PC ports. Use for splat, uv, baserom, matching ROM, configure_min, BSS yaml, libultra, ultralib, m2c, decomp.me, custom runtime, MMIO, N64Recomp, overlays, jalr crashes, GhidraMCP, N64LoaderWV, overlay dispatch tables, CDB cdb.exe trace logs, PowerShell cdb wrappers, MCP client setup, Mupen64MCP, n64-debug-mcp, RMG MCP, symbol_addrs, VRAM/RDRAM, RSP/RDP, function boundaries, N64_PROJECT_STATE, or Zelda64Recomp ports - including "split my ROM", "fix splat yaml", "wire ghidra mcp", "clone build Mupen64MCP", or "debug recomp exe with cdb". Covers matching builds, Ghidra static analysis, host CDB dynamic traces, guest emulator MCP, MCP autoconfig, phase triage, project state. Not Xbox/PC x86 recomp, SNES/GameCube emu-only, or generic MIPS without N64 ROM context.
 metadata:
-  mcpmarket-version: 1.4.0
+  mcpmarket-version: 1.4.1
 ---
 # N64 Decomp — Behavioral Constraint System
 
@@ -75,7 +75,7 @@ Game files may be in a **sibling directory** — ask once, record in state file.
 1. **Splat yaml** — segments, BSS, overlays, symbols → re-split
 2. **Metadata / TOML** — recomp input, relocatable sections, patches
 3. **Host runtime** — librecomp, overlays, DMA, saves, RSP/VI glue
-4. **Evidence** — ledger, GhidraMCP, `readelf` → then promote to yaml/TOML
+4. **Evidence** — ledger, GhidraMCP (static), optional Mupen64MCP/RMG (guest proof), `readelf` → then promote to yaml/TOML
 
 ### Phase C — REPORT BEFORE ACTING
 
@@ -87,7 +87,7 @@ Tell the user: detected phase, track, gaps, and **one** concrete next step. Wait
 |---------|---------|
 | Before editing yaml / TOML / runtime | State file + `10-agent-guardrails.md` |
 | Before `symbol_addrs` or N64Recomp metadata | `05-function-discovery.md` |
-| After any error/crash | State file + `13-decisional-brain.md` |
+| After any error/crash | State file + `13-decisional-brain.md`; at 3rd repeat → `10-agent-guardrails.md` §3 circuit breaker (Ghidra static + optional Mupen64MCP guest evidence) |
 | Before claiming build/recomp success | Actual log output |
 | After 15+ tool calls | State file + §3 Prohibitions |
 | When confident without verification | Source artifact (confidence = hallucination risk) |

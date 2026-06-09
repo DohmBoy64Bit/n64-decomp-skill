@@ -16,8 +16,12 @@ Upstream: [DohmBoy64Bit/Mupen64MCP](https://github.com/DohmBoy64Bit/Mupen64MCP) 
 
 ## When to load this file
 
+Also load on **circuit breaker strike 3** (`10-agent-guardrails.md` §3) when the failure is guest-side (wrong RDRAM, overlay load, boot flow, `jalr` target) and Ghidra static alone has not broken the loop.
+
 | Situation | Use Mupen64MCP? |
 |-----------|-----------------|
+| **3-strike loop / stuck troubleshooting** | **Yes** — one narrow guest proof after Ghidra hypothesis |
+| **Phase 0 ROM recon / OS type** | **Maybe** — `n64_detect_os`, boot breakpoint (optional enrichment) |
 | Jump table / boundary proof in ROM | **No** — GhidraMCP (`04-ghidra-mcp.md`) |
 | Overlay `jalr` crash, guest PC known | **Maybe** — after TOML/runtime checklist (`09-n64recomp-pipeline.md`) |
 | Verify RDRAM value at runtime | **Yes** |

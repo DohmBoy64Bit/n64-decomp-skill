@@ -266,6 +266,7 @@ Skill-creator evals under `evals/`; benchmark runs in `n64-decomp-workspace/` (g
 
 | Iteration | Skill | Method | with_skill | without_skill | Δ | Notes |
 |-----------|-------|--------|------------|---------------|---|-------|
+| **15** | **v1.4.1** | Live subagents (Auto) | **100%** | **42.7%** | **+57.3%** | Ghidra+Mupen64MCP circuit breaker pairing |
 | **14** | **v1.4.0** | Live subagents (Auto) | **100%** | **34.3%** | **+65.7%** | Mupen64MCP + `mcp-full-setup` 7/7 vs 2/7 |
 | 13 | v1.3.0 | Live subagents (Auto) | 100% | 33.3% | +66.7% | CDB + Ghidra overlay stable |
 | 12 | v1.3.0 | Live subagents (Auto) | 100% | 31.9% | +68.1% | First live subagent run |
@@ -282,7 +283,7 @@ MIT — see [LICENSE](LICENSE). You must **own** any N64 software you analyze. N
 
 ## Links
 
-- **Releases:** https://github.com/DohmBoy64Bit/n64-decomp-skill/releases (current: **v1.4.0**)
+- **Releases:** https://github.com/DohmBoy64Bit/n64-decomp-skill/releases (current: **v1.4.1**)
 - [splat](https://github.com/ethteck/splat) · [N64Recomp](https://github.com/N64Recomp/N64Recomp) · [N64LoaderWV](https://github.com/zeroKilo/N64LoaderWV) · [GhidraMCP](https://github.com/bethington/ghidra-mcp) · [Mupen64MCP](https://github.com/DohmBoy64Bit/Mupen64MCP) · [RMG MCP](https://github.com/thebardockgames/RMG)
 - Related: [pcrecomp-skill](https://github.com/DohmBoy64Bit/pcrecomp-skill), [xboxrecomp-skill](https://github.com/DohmBoy64Bit/xboxrecomp-skill)
 - Design inspiration: [ps2-recomp-Agent-SKILL](https://github.com/hkmodd/ps2-recomp-Agent-SKILL)

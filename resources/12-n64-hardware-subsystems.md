@@ -19,6 +19,8 @@ xxd -g 4 -l 0x40 baserom.z64
 
 Wrong revision or byte order poisons splat, symbols, and N64Recomp.
 
+**Optional runtime recon** (when [Mupen64MCP](https://github.com/DohmBoy64Bit/Mupen64MCP) is built and connected): `n64_detect_os` for libultra vs custom boot hints; exec breakpoint at header entrypoint; compare to Ghidra static map (`04-ghidra-mcp.md`). Runtime enriches Phase 0 — it does not replace hash/header checks or splat yaml.
+
 ## Address Spaces — Never Collapse
 
 | Space | Examples |
